@@ -18,7 +18,7 @@ var map = new ol.Map({
     target: document.getElementById('map'),
     view: new ol.View({
         center: ol.proj.transform([9.205604, 48.687524], 'EPSG:4326', 'EPSG:3857'),
-        zoom: 6
+        zoom: 7
     })
 });
 
@@ -26,7 +26,7 @@ var airplanes = [];
 
 function updateAirplane(data) {
     displayAirplane(data);
-    var updated = false;
+    /*var updated = false;
     var ap = null;
     for (ap in airplanes) {
         if (ap.icao == data.icao) {
@@ -42,7 +42,7 @@ function updateAirplane(data) {
             latitude: data.latitude,
             longitude: data.longitude
         });
-    }
+    }*/
 }
 
 //{\"icao\": \"3C70A9\", \"timestamp\": \"1428977046.2168989\", \"id\": \"BCS6378\", \"latitude\": 1.1145172119140625, \"longitude\": 0.10944431110963983, \"altitude\": 37025, \"heading\": , \"horspeed\": 496, \"verspeed\": 0}"]}
@@ -56,6 +56,7 @@ function displayAirplane(data) {
     });
     vectorSource.addFeature(iconFeature);
 }
+
 function subscribe() {
     $.get("http://flugmon-it.hs-esslingen.de/subscribe/ads.aircraft", function (data, status) {
         alert(status);
@@ -68,13 +69,48 @@ function subscribe() {
          }*/
     });
 }
+
 function main() {
-    $.get("/flightdata.json",function(data, state) {
+
+
+
+    /*$.get("/flightdata.json",function(data, state) {
         var ap;
         for(ap in data.airplanes) {
             updateAirplane(data.airplanes[ap]);
         }
-    },"json");
+    },"json");*/
+
+    var timeout = 200;
+    /*var action = function() {
+        //alert("begin of update sequence");
+        vectorSource.forEachFeature(function(feature){
+                var coordinate = feature.getGeometry().getCoordinates();
+                //move coordinates some distance
+                ol.coordinate.add(coordinate, 10, 10);
+                //use setGeometry to move it
+                feature.setGeometry(new ol.coordinate);
+
+            }
+        );
+    };*/
+    var counter = 0;
+    var action = function() {
+        vectorSource.clear();
+        $.get("/flightdata.json",function(data, state) {
+            var ap;
+            for(ap in data.airplanes) {
+                var apdata = data.airplanes[ap];
+                updateAirplane({
+                    icao: apdata.icao,
+                    latitude: apdata.latitude - counter*0.0012,
+                    longitude: apdata.longitude + counter*0.001
+                })
+            }
+            counter++;
+        },"json");
+    };
+    setInterval(action, timeout);
 
     /*var airplane;
     for(airplane in airplanes) {

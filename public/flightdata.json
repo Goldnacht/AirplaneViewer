@@ -2,18 +2,53 @@
   "airplanes":[
     {
       "icao":"ap_001",
-      "latitude":12.55454,
-      "longitude":45.65654
+      "latitude":10.55454,
+      "longitude":49.65654
     },
     {
       "icao":"ap_002",
-      "latitude":13.454,
-      "longitude":40.5556
+      "latitude":11.454,
+      "longitude":44.5556
     },
     {
       "icao":"ap_003",
-      "latitude":15.64655,
-      "longitude":42.1121
+      "latitude":13.64655,
+      "longitude":46.1121
+    },
+    {
+      "icao":"ap_004",
+      "latitude":9.623455,
+      "longitude":48.12231
+    },
+    {
+      "icao":"ap_005",
+      "latitude":9.64655,
+      "longitude":45.1121
+    },
+    {
+      "icao":"ap_006",
+      "latitude":8.64655,
+      "longitude":45.1121
+    },
+    {
+      "icao":"ap_007",
+      "latitude":7.64655,
+      "longitude":50.1121
+    },
+    {
+      "icao":"ap_008",
+      "latitude":13.14225,
+      "longitude":50.1121
+    },
+    {
+      "icao":"ap_009",
+      "latitude":12.12655,
+      "longitude":49.1121
+    },
+    {
+      "icao":"ap_010",
+      "latitude":9.205604,
+      "longitude":48.687524
     }
   ]
 }
