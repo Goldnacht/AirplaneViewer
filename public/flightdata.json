@@ -1,19 +1,19 @@
 {
   "airplanes":[
     {
-      "iocp":"ap_001",
-      "lat":12.55454,
-      "lon":45.65654
+      "icao":"ap_001",
+      "latitude":12.55454,
+      "longitude":45.65654
     },
     {
-      "iocp":"ap_002",
-      "lat":13.454,
-      "lon":40.5556
+      "icao":"ap_002",
+      "latitude":13.454,
+      "longitude":40.5556
     },
     {
-      "iocp":"ap_003",
-      "lat":15.64655,
-      "lon":42.1121
+      "icao":"ap_003",
+      "latitude":15.64655,
+      "longitude":42.1121
     }
   ]
 }
