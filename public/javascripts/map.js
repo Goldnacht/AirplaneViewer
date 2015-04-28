@@ -18,13 +18,15 @@ var map = new ol.Map({
     target: document.getElementById('map'),
     view: new ol.View({
         center: ol.proj.transform([9.205604, 48.687524], 'EPSG:4326', 'EPSG:3857'),
-        zoom: 7
+        zoom: 8
     })
 });
 
 function displayAirplane(airplane) {
+    var lon = parseFloat(airplane.Longitude);
+    var lat = parseFloat(airplane.Latitude);
     var iconFeature = new ol.Feature({
-        geometry: new ol.geom.Point(ol.proj.transform([airplane.Longitude, airplane.Latitude], 'EPSG:4326', 'EPSG:3857')),
+        geometry: new ol.geom.Point(ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857')),
         name: airplane.ICAO
     });
     vectorSource.addFeature(iconFeature);
