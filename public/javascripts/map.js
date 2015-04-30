@@ -1,18 +1,9 @@
 var vectorSource = new ol.source.Vector({});
-var iconStyle = new ol.style.Style({
-    image: new ol.style.Icon(({
-        anchor: [0.5, 46],
-        size: [32,32],
-        anchorXUnits: 'pixels',
-        anchorYUnits: 'pixels',
-        opacity: 0.85,
-        src: '/images/AirplaneBig.png'
-    }))
-});
+
 var vectorLayer = new ol.layer.Vector({
-    source: vectorSource,
-    style: iconStyle
+    source: vectorSource
 });
+
 var map = new ol.Map({
     layers: [new ol.layer.Tile({source: new ol.source.OSM()}), vectorLayer],
     target: document.getElementById('map'),
@@ -23,33 +14,80 @@ var map = new ol.Map({
 });
 
 function displayAirplane(airplane) {
-    var lon = parseFloat(airplane.Longitude);
-    var lat = parseFloat(airplane.Latitude);
+    var lon = airplane.longitude;
+    var lat = airplane.latitude;
+    var feature = vectorSource.getFeatureById(airplane.icao);
+    if (feature != null) { vectorSource.removeFeature(feature); }
+
+    var rotation = 0;
+    if (airplane.heading != null) rotation = airplane.heading;
+
+    var iconStyle = new ol.style.Style({
+        image: new ol.style.Icon(({
+            anchor: [16, 16],
+            size: [32,32],
+            anchorXUnits: 'pixels',
+            anchorYUnits: 'pixels',
+            opacity: 0.85,
+            src: '/images/AirplaneBig.png',
+            rotation: rotation
+        }))
+    });
+
     var iconFeature = new ol.Feature({
         geometry: new ol.geom.Point(ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857')),
-        name: airplane.ICAO
+        name: airplane.icao
     });
+    iconFeature.setId(airplane.icao);
+    iconFeature.setStyle(iconStyle);
     vectorSource.addFeature(iconFeature);
 }
 
-function main() {
-    var timeout = 2000;
+function removeAirplane(airplane) {
+    var feature = vectorSource.getFeatureById(airplane.icao);
+    if (feature != null) { vectorSource.removeFeature(feature); }
+}
 
-    var action = function(){
-        vectorSource.clear();
+function main() {
+
+    var getNewAirplanes = function(){
+        //console.log("getNewAirplanes: triggered");
         getAirplanes(function(data){
-            var ap;
-            for (ap in data.keys) {
-                var key = data.keys[ap].split('.')[2];
+            var icao;
+            for (icao in data.keys) {
+                var key = data.keys[icao].split('.')[2];
                 var ap = getAirplane(key);
-                ap.update();
-                if (ap.Longitude != null && ap.Latitude != null) {
-                    displayAirplane(ap);
-                }
             }
         });
     };
 
-    setInterval(action, timeout);
+    var triggerUpdates = function () {
+        //console.log("triggerUpdates: triggered");
+        var i;
+        for(i in airplanes) {
+            airplanes[i].update();
+        }
+    };
+
+    var updateDisplayedAirplanes = function() {
+        //console.log("updateDisplayedAirplanes: triggered");
+        var i;
+        for(i in airplanes) {
+            var ap = airplanes[i];
+            if (ap.changed == true) {
+                if (isNaN(ap.longitude) || isNaN(ap.latitude)) continue;
+                displayAirplane(ap);
+                ap.changed = false;
+            }
+            if (ap.changedTime < ((new Date).getTime() - 120000)) {
+                removeAirplane(ap);
+            }
+        }
+    };
+
+    getNewAirplanes();
+    setInterval(getNewAirplanes, 10000);
+    setInterval(triggerUpdates, 2000);
+    setInterval(updateDisplayedAirplanes, 1000);
 }
 main();
