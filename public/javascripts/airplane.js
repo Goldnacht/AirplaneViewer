@@ -1,5 +1,5 @@
 /**
- * Created by frederik on 21.04.15.
+ * Created by frederik on 21.04.15
  */
 
 var airplanes = [];
