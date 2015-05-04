@@ -13,6 +13,21 @@ var map = new ol.Map({
     })
 });
 
+// display popup on click
+map.on('click', function(evt) {
+    var feature = map.forEachFeatureAtPixel(evt.pixel,
+        function(feature, layer) {
+            return feature;
+        });
+    if (feature) {
+        var airplane = getAirplane(feature.id);
+        $('#icao').innerText = airplane.icao;
+        $('#longitude').innerText = airplane.longitude;
+        $('#latitude').innerText = airplane.latitude;
+        $('#popout').show();
+    }
+});
+
 function displayAirplane(airplane) {
     var lon = airplane.longitude;
     var lat = airplane.latitude;

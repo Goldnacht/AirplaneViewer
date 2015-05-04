@@ -1,4 +1,24 @@
 extends layout
 
 block content
+  div#popout
+    div.close
+      a(href='#', onclick="$('#popout').hide();")
+        i(class='fa fa-close fa-lg')
+    div.airplaneInfos
+      div.airplaneSizeImage
+        i(class='fa fa-plane fa-lg')
+        //img(src='/images/AirplaneBig.png')
+      div#icao(class='icao') 3C6489
+      div.flightNumber ABCDEF
+      div.position
+        i(class='fa fa-map-marker fa-lg')
+        span#longitude(class='data') 49.56552451
+        span#latitude(class='data') 9.1664646
+      div.speedHorizontal
+        i(class='fa fa-arrows-h fa-lg')
+        span.data 560 km/h
+      div.speedVertical
+        i(class='fa fa-arrows-v fa-lg')
+        span.data 10 m/s
   div#map(class='map')
