@@ -45,7 +45,7 @@ a, a:hover, a:visited, a:active {
 
   div {
     //border: 1px solid white;
-    padding-bottom: 10px;
+    padding-bottom: 20px;
   }
 
   .airplaneSizeImage {
@@ -63,18 +63,18 @@ a, a:hover, a:visited, a:active {
   }
 
   .speedHorizontal, .speedVertical {
-    flex: 1 1 auto;
-
-    .data {
-      padding-left: 15px;
-    }
+    flex: 1 1 50%;
   }
 
   .position {
     flex: 0 0 auto;
+  }
 
-    .data {
-      padding-left: 15px;
-    }
+  .departureAirport, .departureTime, .arrivalAirport, .arrivalTime {
+    flex: 1 1 50%;
+  }
+
+  span.data {
+    padding-left: 15px;
   }
 }
