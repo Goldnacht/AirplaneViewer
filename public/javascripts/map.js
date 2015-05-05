@@ -24,7 +24,9 @@ map.on('click', function(evt) {
         $('#icao').innerText = airplane.icao;
         $('#longitude').innerText = airplane.longitude;
         $('#latitude').innerText = airplane.latitude;
-        $('#popout').show();
+        $('#popout').fadeIn();
+    } else {
+        $('#popout').fadeOut();
     }
 });
 
@@ -94,7 +96,7 @@ function main() {
                 displayAirplane(ap);
                 ap.changed = false;
             }
-            if (ap.changedTime < ((new Date).getTime() - 120000)) {
+            if (ap.changedTime < ((new Date).getTime() - 300000)) {
                 removeAirplane(ap);
             }
         }
