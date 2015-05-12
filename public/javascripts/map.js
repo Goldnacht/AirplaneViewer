@@ -13,6 +13,8 @@ var map = new ol.Map({
     })
 });
 
+var selectedFeature = null;
+
 // display popup on click
 map.on('click', function(evt) {
     var feature = map.forEachFeatureAtPixel(evt.pixel,
@@ -20,15 +22,51 @@ map.on('click', function(evt) {
             return feature;
         });
     if (feature) {
-        var airplane = getAirplane(feature.id);
-        $('#icao').innerText = airplane.icao;
-        $('#longitude').innerText = airplane.longitude;
-        $('#latitude').innerText = airplane.latitude;
+        if (selectedFeature != null) {
+            if (selectedFeature.getId() != feature.getId()) {
+
+            }
+        }
+        selectedFeature = feature;
+        console.log("Feature clicked: " + feature.getId());
+        var airplane = getAirplane(feature.getId());
+        $('#icao').text(airplane.icao);
+        $('#longitude').text(airplane.longitude.toFixed(8));
+        $('#latitude').text(airplane.latitude.toFixed(8));
+
+        var rotation = 0;
+        if (airplane.heading != null) rotation = airplane.heading;
+        var iconStyle = getIcon("2", "clicked", rotation);
+        feature.setStyle(iconStyle);
+
         $('#popout').fadeIn();
     } else {
         $('#popout').fadeOut();
     }
 });
+
+function getIcon(size, state, rotation) {
+    var src = '/images/Airplane' + size;
+    if (state == "clicked") {
+        src += "_click.png";
+    } else if (state == "hover") {
+        src += "_hover.png";
+    } else {
+        src += ".png";
+    }
+
+    return new ol.style.Style({
+        image: new ol.style.Icon(({
+            anchor: [16, 16],
+            size: [32,32],
+            anchorXUnits: 'pixels',
+            anchorYUnits: 'pixels',
+            opacity: 0.85,
+            src: src,
+            rotation: rotation
+        }))
+    });
+}
 
 function displayAirplane(airplane) {
     var lon = airplane.longitude;
@@ -39,17 +77,7 @@ function displayAirplane(airplane) {
     var rotation = 0;
     if (airplane.heading != null) rotation = airplane.heading;
 
-    var iconStyle = new ol.style.Style({
-        image: new ol.style.Icon(({
-            anchor: [16, 16],
-            size: [32,32],
-            anchorXUnits: 'pixels',
-            anchorYUnits: 'pixels',
-            opacity: 0.85,
-            src: '/images/AirplaneBig.png',
-            rotation: rotation
-        }))
-    });
+    var iconStyle = getIcon("2", "", rotation);
 
     var iconFeature = new ol.Feature({
         geometry: new ol.geom.Point(ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857')),
