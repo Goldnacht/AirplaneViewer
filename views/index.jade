@@ -33,4 +33,19 @@ block content
       div.arrivalTime
         i(class='fa fa-clock-o fa-lg')
         span.data 15:00
+
+  div#optionsbutton
+    i(class='fa fa-cog')
+
+  div#options
+    div.close
+      a(href='#', onclick="$('#options').fadeOut();")
+    div.mapstyle_sat
+      i(class='fa fa-compass')
+    div.mapstyle_earth
+      i(class='fa fa-globe')
+      div.contact
+        i(class='fa fa-envelope-o')
+
+
   div#map(class='map')
