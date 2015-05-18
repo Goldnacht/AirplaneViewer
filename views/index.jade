@@ -34,6 +34,15 @@ block content
         i(class='fa fa-clock-o fa-lg')
         span.data 15:00
 
+  div#searchbutton
+    i(class='fa fa-search')
+
+   div#search
+     div.close
+       a(href='#', onclick="$('#search').fadeOut();")
+       <input type='text'> <input type='submit' value='Search'>
+
+
   div#optionsbutton
     i(class='fa fa-cog')
 

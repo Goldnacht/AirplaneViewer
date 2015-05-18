@@ -38,11 +38,63 @@ a, a:hover, a:visited, a:active {
   }
 }
 
+#searchbutton {
+  // display: none;
+  position: absolute;
+  left: 9px;
+  top: 68px;
+  z-index: 100;
+  border: 3px solid rgba(999, 999, 999, 0.8);
+  overflow: hidden;
+  background-color: rgba(0, 102, 153, 0.6);
+  padding: 5px;
+  height: 15px;
+  width: 15px;
+  color: white;
+}
+
+#search {
+  display: none;
+  position: absolute;
+  left: 40px;
+  top: 70px;
+  z-index: 100;
+  border-radius: 5px;
+  overflow: hidden;
+  background-color: rgba(0, 102, 153, 0.6);
+  padding: 15px;
+  width: 215px;
+  color: white;
+
+  .close {
+    position: absolute;
+    z-index: 150;
+    right: 0;
+    top: 0;
+    padding: 5px;
+  }
+}
+
+#optionsbutton {
+  // display: none;
+  position: absolute;
+  left: 9px;
+  top: 95px;
+  z-index: 100;
+  border: 3px solid rgba(999, 999, 999, 0.8);
+  overflow: hidden;
+  background-color: rgba(0, 102, 153, 0.6);
+  padding: 5px;
+  height: 15px;
+  width: 15px;
+  color: white;
+}
+
 #options {
   display: none;
   position: absolute;
   left: 40px;
-  top: 95px;
+  top: 97px;
   z-index: 100;
   border-radius: 5px;
   overflow: hidden;
@@ -60,20 +112,6 @@ a, a:hover, a:visited, a:active {
   }
 }
 
-#optionsbutton {
-  // display: none;
-  position: absolute;
-  left: 9px;
-  top: 68px;
-  z-index: 100;
-  border: 3px solid rgba(999, 999, 999, 0.8);
-  overflow: hidden;
-  background-color: rgba(0, 102, 153, 0.6);
-  padding: 5px;
-  height: 15px;
-  width: 15px;
-  color: white;
-}
 
 .airplaneInfos {
   display: flex;
