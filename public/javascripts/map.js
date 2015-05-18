@@ -24,7 +24,7 @@ map.on('click', function(evt) {
     if (feature) {
         if (selectedFeature != null) {
             if (selectedFeature.getId() != feature.getId()) {
-
+                setAirplaneFeatureStyle(selectedFeature, "");
             }
         }
         selectedFeature = feature;
@@ -34,16 +34,58 @@ map.on('click', function(evt) {
         $('#longitude').text(airplane.longitude.toFixed(8));
         $('#latitude').text(airplane.latitude.toFixed(8));
 
-        var rotation = 0;
-        if (airplane.heading != null) rotation = airplane.heading;
-        var iconStyle = getIcon("2", "clicked", rotation);
-        feature.setStyle(iconStyle);
+        setAirplaneFeatureStyle(selectedFeature, "clicked");
 
         $('#popout').fadeIn();
     } else {
+        setAirplaneFeatureStyle(selectedFeature, "");
+        selectedFeature = null;
         $('#popout').fadeOut();
     }
 });
+
+var hoveredFeature = null;
+
+// change mouse cursor when over marker
+map.on('pointermove', function(e) {
+    if (e.dragging) {
+        $(element).popover('destroy');
+        return;
+    }
+    var pixel = map.getEventPixel(e.originalEvent);
+    var hit = map.hasFeatureAtPixel(pixel);
+    map.getTarget().style.cursor = hit ? 'pointer' : '';
+
+    var feature = map.forEachFeatureAtPixel(pixel,
+        function(feature, layer) {
+            return feature;
+        });
+
+    if (hoveredFeature) {
+        if (hoveredFeature != feature) {
+            if (hoveredFeature != selectedFeature) {
+                setAirplaneFeatureStyle(hoveredFeature, "");
+                hoveredFeature = null;
+            }
+        }
+    }
+
+    if (feature) {
+        if (feature != selectedFeature) {
+            setAirplaneFeatureStyle(feature, "hover");
+            hoveredFeature = feature;
+        }
+    }
+
+});
+
+function setAirplaneFeatureStyle(feature, state) {
+    var airplane = getAirplane(feature.getId());
+    var rotation = 0;
+    if (airplane.heading != null) rotation = airplane.heading;
+    var iconStyle = getIcon("2", state, rotation);
+    feature.setStyle(iconStyle);
+}
 
 function getIcon(size, state, rotation) {
     var src = '/images/Airplane' + size;
