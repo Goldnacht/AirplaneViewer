@@ -3,14 +3,14 @@ extends layout
 block content
   div#popout
     div.close
-      a(href='#', onclick="$('#popout').fadeOut();")
+      a(href='#', onclick="closePopout();")
         i(class='fa fa-close fa-lg')
     div.airplaneInfos
       div.airplaneSizeImage
         i(class='fa fa-plane fa-lg')
         //img(src='/images/AirplaneBig.png')blöb
       div#icao(class='icao') 3C6489
-      div.flightNumber ABCDEF
+      //div.flightNumber ABCDEF
       div.position
         i(class='fa fa-map-marker fa-lg')
         span#longitude(class='data') 49.56552451
@@ -21,16 +21,16 @@ block content
       div.speedVertical
         i(class='fa fa-arrows-v fa-lg')
         span.data 10 m/s
-      div.departureAirport
+      //div.departureAirport
         i(class='fa fa-location-arrow fa-lg')
         span.data STG
-      div.departureTime
+      //div.departureTime
         i(class='fa fa-clock-o fa-lg')
         span.data 12:45
-      div.arrivalAirport
+      //div.arrivalAirport
         i(class='fa fa-location-arrow fa-lg fa-rotate-90')
         span.data MAD
-      div.arrivalTime
+      //div.arrivalTime
         i(class='fa fa-clock-o fa-lg')
         span.data 15:00
 
