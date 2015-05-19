@@ -55,8 +55,18 @@ map.on('pointermove', function(event) {
             var airplane = getAirplane(feature.getId());
             setAirplaneFeatureStyle(airplane, "hover");
             hoveredAirplane = airplane;
+            $("#tooltipInfo").text(airplane.icao);
+            $("#tooltip").show();
         }
+    } else {
+        $("#tooltip").hide();
     }
+});
+
+$(document).bind('mousemove',function(e){
+    var y = e.pageY + 5;
+    var x = e.pageX + 5;
+    $("#tooltip").css({ "top": y + "px", "left": x + "px" });
 });
 
 function setAirplaneFeatureStyle(airplane, state) {
@@ -128,6 +138,10 @@ function removeAirplane(airplane) {
     if (feature != null) { vectorSource.removeFeature(feature); }
 }
 
+function toggleSearch() {
+    $('#search').css('display') == 'none' ? $('#search').fadeIn() : $('#search').fadeOut();
+}
+
 function main() {
 
     var getNewAirplanes = function(){
@@ -159,8 +173,9 @@ function main() {
                 displayAirplane(ap);
                 ap.changed = false;
             }
-            if (ap.changedTime < ((new Date).getTime() - 300000)) {
+            if (ap.changedTime && ap.changedTime < ((new Date).getTime() - 300000)) {
                 removeAirplane(ap);
+                closePopout();
             }
         }
     };

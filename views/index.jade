@@ -1,6 +1,9 @@
 extends layout
 
 block content
+  div#tooltip
+    div#tooltipInfo
+
   div#popout
     div.close
       a(href='#', onclick="closePopout();")
@@ -36,19 +39,13 @@ block content
         i(class='fa fa-clock-o fa-lg')
         span.data 15:00
 
-  div#searchbutton
-    i(class='fa fa-search')
+  div#search
+    div.inner
+      input.searchInput(placeholder='Suchanfrage...')
+      button.startSearch
+        i(class='fa fa-search fa-lg')
 
-   div#search
-     div.close
-       a(href='#', onclick="$('#search').fadeOut();")
-       <input type='text'> <input type='submit' value='Search'>
-
-
-  div#optionsbutton
-    i(class='fa fa-cog')
-
-  div#options
+  //div#options
     div.close
       a(href='#', onclick="$('#options').fadeOut();")
     div.mapstyle_sat
@@ -60,3 +57,8 @@ block content
 
 
   div#map(class='map')
+    div#moreOptions(class="ol-control")
+      button#searchButton(type="button", onclick="toggleSearch();")
+        i(class='fa fa-search')
+      button#optionsButton(type="button")
+        i(class='fa fa-cog')

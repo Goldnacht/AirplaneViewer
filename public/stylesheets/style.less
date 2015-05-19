@@ -1,3 +1,14 @@
+@blueBg: rgba(0, 60, 136, 0.5);
+@whiteBorder: rgba(255, 255, 255, 0.8);
+@whiteBg: rgba(255,255,255,0.4);
+
+.ph(@color: #fff) {
+  input::-webkit-input-placeholder { color: @color; }
+  input:-moz-placeholder { color: @color; }
+  textarea::-webkit-input-placeholder { color: @color; }
+  textarea:-moz-placeholder { color: @color; }
+}
+
 body {
   margin: 0;
   font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -17,77 +28,125 @@ a, a:hover, a:visited, a:active {
   position: relative;
 }
 
+.close {
+  position: absolute;
+  z-index: 150;
+  right: 5px;
+  top: 5px;
+  padding: 2px;
+  border: 1px solid white;
+  border-radius: 3px;
+}
+
 #popout {
   display: none;
   position: absolute;
-  right: 15px;
-  top: 15px;
+  right: 0.5em;
+  top: 0.5em;
   z-index: 100;
   border-radius: 5px;
   overflow: hidden;
-  background-color: rgba(0, 102, 153, 0.6);
-  padding: 15px;
+  background-color: @whiteBg;
+  padding: 2px;
   width: 250px;
 
-  .close {
-    position: absolute;
-    z-index: 150;
-    right: 0;
-    top: 0;
-    padding: 5px;
+  .airplaneInfos {
+    padding: 10px;
+    background: @blueBg;
+    border-radius: 3px;
+    margin: 1px;
+
+    display: flex;
+    color: #ffffff;
+    flex-wrap: wrap;
+
+    div {
+      //border: 1px solid white;
+      padding-bottom: 20px;
+    }
+
+    .airplaneSizeImage {
+      flex: 0 0 32px;
+    }
+
+    .flightNumber {
+      flex: 1 1 auto;
+    }
+
+    .icao {
+      flex: 1 1 auto;
+      text-align: center;
+      font-size: larger;
+    }
+
+    .speedHorizontal, .speedVertical {
+      flex: 1 1 50%;
+    }
+
+    .position {
+      flex: 0 0 auto;
+    }
+
+    .departureAirport, .departureTime, .arrivalAirport, .arrivalTime {
+      flex: 1 1 50%;
+    }
+
+    span.data {
+      padding-left: 15px;
+    }
+
+    span.unit {
+      padding-left: 5px;
+    }
   }
 }
 
-#searchbutton {
-  // display: none;
-  position: absolute;
-  left: 9px;
-  top: 68px;
+#moreOptions {
   z-index: 100;
-  border: 3px solid rgba(999, 999, 999, 0.8);
-  overflow: hidden;
-  background-color: rgba(0, 102, 153, 0.6);
-  padding: 5px;
-  height: 15px;
-  width: 15px;
-  color: white;
+  left: 0.5em;
+  top: 4em;
 }
 
 #search {
   display: none;
   position: absolute;
-  left: 40px;
-  top: 70px;
+  left: 3em;
+  top: 0.5em;
   z-index: 100;
-  border-radius: 5px;
-  overflow: hidden;
-  background-color: rgba(0, 102, 153, 0.6);
-  padding: 15px;
-  width: 215px;
-  color: white;
+  border-radius: 3px;
+  background: @whiteBg;
+  padding: 2px;
 
-  .close {
-    position: absolute;
-    z-index: 150;
-    right: 0;
-    top: 0;
-    padding: 5px;
+  .inner {
+    border-radius: 3px;
+    margin: 1px;
+    background: @blueBg;
+    color: white;
+
+    .searchInput {
+      width: 300px;
+      font-size: 1em;
+      padding: 5px;
+      height: 1.4em;
+      background: none;
+      border-radius: 3px;
+      border: none;
+      color: white;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    .ph(#fff);
+
+    .startSearch {
+      background: none;
+      color: white;
+      border: none;
+      border-left: 2px solid rgba(255,255,255,0.8);
+      border-radius: 3px;
+      padding: 10px;
+    }
   }
-}
-
-#optionsbutton {
-  // display: none;
-  position: absolute;
-  left: 9px;
-  top: 95px;
-  z-index: 100;
-  border: 3px solid rgba(999, 999, 999, 0.8);
-  overflow: hidden;
-  background-color: rgba(0, 102, 153, 0.6);
-  padding: 5px;
-  height: 15px;
-  width: 15px;
-  color: white;
 }
 
 #options {
@@ -98,7 +157,7 @@ a, a:hover, a:visited, a:active {
   z-index: 100;
   border-radius: 5px;
   overflow: hidden;
-  background-color: rgba(0, 102, 153, 0.6);
+  background-color: @blueBg;
   padding: 15px;
   width: 18px;
   color: white;
@@ -112,48 +171,20 @@ a, a:hover, a:visited, a:active {
   }
 }
 
+#tooltip {
+  display: none;
+  position: absolute;
+  z-index: 110;
+  border-radius: 3px;
+  overflow: hidden;
+  background-color: @whiteBg;
+  padding: 2px;
+  color: white;
 
-.airplaneInfos {
-  display: flex;
-  color: #ffffff;
-  flex-wrap: wrap;
-
-  div {
-    //border: 1px solid white;
-    padding-bottom: 20px;
-  }
-
-  .airplaneSizeImage {
-    flex: 0 0 32px;
-  }
-
-  .flightNumber {
-    flex: 1 1 auto;
-  }
-
-  .icao {
-    flex: 1 1 auto;
-    text-align: center;
-    font-size: larger;
-  }
-
-  .speedHorizontal, .speedVertical {
-    flex: 1 1 50%;
-  }
-
-  .position {
-    flex: 0 0 auto;
-  }
-
-  .departureAirport, .departureTime, .arrivalAirport, .arrivalTime {
-    flex: 1 1 50%;
-  }
-
-  span.data {
-    padding-left: 15px;
-  }
-
-  span.unit {
-    padding-left: 5px;
+  #tooltipInfo {
+    margin: 1px;
+    background: @blueBg;
+    border-radius: 3px;
+    padding: 5px;
   }
 }
