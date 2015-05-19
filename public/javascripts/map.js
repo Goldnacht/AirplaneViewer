@@ -94,6 +94,8 @@ function updatePopoutData() {
     $('#icao').text(selectedAirplane.icao);
     $('#longitude').text(selectedAirplane.longitude.toFixed(8));
     $('#latitude').text(selectedAirplane.latitude.toFixed(8));
+    $('#horizontal').text(selectedAirplane.horizontal);
+    $('#vertical').text(selectedAirplane.vertical);
 }
 
 function displayAirplane(airplane) {

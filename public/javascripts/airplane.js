@@ -22,6 +22,8 @@ function getAirplane(icao) {
                 readLatitude(this.icao);
                 readLongitude(this.icao);
                 readHeading(this.icao);
+                readHorizontal(this.icao);
+                readVertical(this.icao);
             }
         };
     }
@@ -87,6 +89,40 @@ function readHeading(icao) {
     }
 }
 
+function readHorizontal(icao) {
+    var result = "";
+    $.get("http://flugmon-it.hs-esslingen.de/get/icao.horizontal."+icao, SaveFunction);
+    function SaveFunction(data) {
+        result = data.get;
+        var ap = getAirplane(icao);
+        var nVal = parseFloat(result);
+        if (!isNaN(nVal) && nVal != ap.horizontal) {
+            var time = (new Date).getTime();
+            ap.horizontal = nVal;
+            logChange(icao, "hor",nVal,time);
+            ap.changed = true;
+            ap.changedTime = time;
+        }
+    }
+}
+
+function readVertical(icao) {
+    var result = "";
+    $.get("http://flugmon-it.hs-esslingen.de/get/icao.vertical."+icao, SaveFunction);
+    function SaveFunction(data) {
+        result = data.get;
+        var ap = getAirplane(icao);
+        var nVal = parseFloat(result);
+        if (!isNaN(nVal) && nVal != ap.vertical) {
+            var time = (new Date).getTime();
+            ap.vertical = nVal;
+            logChange(icao, "ver",nVal,time);
+            ap.changed = true;
+            ap.changedTime = time;
+        }
+    }
+}
+
 function readAltitude(icao) {
     var result = "";
     $.get("http://flugmon-it.hs-esslingen.de/get/icao.altitude."+icao, SaveFunction);
@@ -102,16 +138,6 @@ function readAltitude(icao) {
     }
 }
 
-function readHorizontal(icao) {
-    var result = "";
-    $.get("http://flugmon-it.hs-esslingen.de/get/icao.horizontal."+icao, SaveFunction);
-    function SaveFunction(data) {
-        result = data.get;
-        var ap = getAirplane(icao);
-        ap.horizontal = parseFloat(result);
-    }
-}
-
 function readAcid(icao) {
     var result = "";
     $.get("http://flugmon-it.hs-esslingen.de/get/icao.acid."+icao, SaveFunction);
@@ -119,16 +145,6 @@ function readAcid(icao) {
         result = data.get;
         var ap = getAirplane(icao);
         ap.acid = result;
-    }
-}
-
-function readVertical(icao) {
-    var result = "";
-    $.get("http://flugmon-it.hs-esslingen.de/get/icao.vertical."+icao, SaveFunction);
-    function SaveFunction(data) {
-        result = data.get;
-        var ap = getAirplane(icao);
-        ap.vertical = parseFloat(result);
     }
 }
 
