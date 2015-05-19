@@ -10,6 +10,11 @@ var map = new ol.Map({
     })
 });
 
+$('.ol-attribution').prepend('<div class="creators">&copy; Frederik Eschmann, Hatice Yildirim, Christine Vosseler, Waldemar Stenski</div>');
+
+$('#searchButton').prependTo('.ol-control.ol-zoom');
+$('#optionsButton').prependTo('.ol-control.ol-attribution');
+
 var selectedAirplane = null;
 var hoveredAirplane = null;
 

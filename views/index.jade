@@ -45,20 +45,23 @@ block content
       button.startSearch
         i(class='fa fa-search fa-lg')
 
-  //div#options
+  div#options
     div.close
       a(href='#', onclick="$('#options').fadeOut();")
-    div.mapstyle_sat
-      i(class='fa fa-compass')
-    div.mapstyle_earth
-      i(class='fa fa-globe')
+        i(class='fa fa-close fa-lg')
+    div.inner
+      div.mapstyle_sat
+        i(class='fa fa-compass')
+      div.mapstyle_earth
+        i(class='fa fa-globe')
       div.contact
         i(class='fa fa-envelope-o')
 
+  button#searchButton(type="button", onclick="toggleSearch();")
+    i(class='fa fa-search')
+  button#optionsButton(type="button")
+    i(class='fa fa-cog')
 
   div#map(class='map')
-    div#moreOptions(class="ol-control")
-      button#searchButton(type="button", onclick="toggleSearch();")
-        i(class='fa fa-search')
-      button#optionsButton(type="button")
-        i(class='fa fa-cog')
+
+

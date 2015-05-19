@@ -101,12 +101,6 @@ a, a:hover, a:visited, a:active {
   }
 }
 
-#moreOptions {
-  z-index: 100;
-  left: 0.5em;
-  top: 4em;
-}
-
 #search {
   display: none;
   position: absolute;
@@ -149,25 +143,34 @@ a, a:hover, a:visited, a:active {
   }
 }
 
+#searchButton {
+  margin-bottom: 3px;
+  i.fa {
+    font-size: 13px;
+  }
+}
+
+#optionsButton {
+  line-height: inherit;
+}
+
 #options {
   display: none;
   position: absolute;
-  left: 40px;
-  top: 97px;
-  z-index: 100;
-  border-radius: 5px;
-  overflow: hidden;
-  background-color: @blueBg;
-  padding: 15px;
-  width: 18px;
-  color: white;
+  left: 3em;
+  top: 3em;
+  z-index: 120;
+  border-radius: 3px;
+  background-color: @whiteBg;
+  padding: 2px;
 
-  .close {
-    position: absolute;
-    z-index: 150;
-    right: 0;
-    top: 0;
-    padding: 5px;
+  .inner {
+    margin: 1px;
+    background: @blueBg;
+    border-radius: 3px;
+    color: white;
+    width: 150px;
+    height: 250px;
   }
 }
 
@@ -187,4 +190,20 @@ a, a:hover, a:visited, a:active {
     border-radius: 3px;
     padding: 5px;
   }
+}
+
+.ol-attribution a {
+  color: black;
+}
+
+div.creators {
+  font-size: 0.7rem;
+  position: relative;
+  padding: 5px;
+  display: inline;
+  margin-right: 20px;
+}
+
+.ol-attribution.ol-collapsed div.creators {
+  display: none;
 }
