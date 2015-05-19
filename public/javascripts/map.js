@@ -1,8 +1,5 @@
 var vectorSource = new ol.source.Vector({});
-
-var vectorLayer = new ol.layer.Vector({
-    source: vectorSource
-});
+var vectorLayer = new ol.layer.Vector({ source: vectorSource });
 
 var map = new ol.Map({
     layers: [new ol.layer.Tile({source: new ol.source.OSM()}), vectorLayer],
@@ -13,78 +10,61 @@ var map = new ol.Map({
     })
 });
 
-var selectedFeature = null;
+var selectedAirplane = null;
+var hoveredAirplane = null;
+
+function closePopout() {
+    setAirplaneFeatureStyle(selectedAirplane, "");
+    selectedAirplane = null;
+    $('#popout').fadeOut();
+}
 
 // display popup on click
-map.on('click', function(evt) {
-    var feature = map.forEachFeatureAtPixel(evt.pixel,
-        function(feature, layer) {
-            return feature;
-        });
+map.on('click', function (event) {
+    var feature = map.forEachFeatureAtPixel(event.pixel, function(feature, layer) { return feature; });
     if (feature) {
-        if (selectedFeature != null) {
-            if (selectedFeature.getId() != feature.getId()) {
-                setAirplaneFeatureStyle(selectedFeature, "");
-            }
+        if (selectedAirplane != null) {
+            if (selectedAirplane.icao != feature.getId()) { setAirplaneFeatureStyle(selectedAirplane, ""); }
         }
-        selectedFeature = feature;
         console.log("Feature clicked: " + feature.getId());
         var airplane = getAirplane(feature.getId());
-        $('#icao').text(airplane.icao);
-        $('#longitude').text(airplane.longitude.toFixed(8));
-        $('#latitude').text(airplane.latitude.toFixed(8));
-
-        setAirplaneFeatureStyle(selectedFeature, "clicked");
-
+        selectedAirplane = airplane;
+        updatePopoutData();
+        setAirplaneFeatureStyle(selectedAirplane, "clicked");
         $('#popout').fadeIn();
     } else {
-        setAirplaneFeatureStyle(selectedFeature, "");
-        selectedFeature = null;
-        $('#popout').fadeOut();
+        closePopout();
     }
 });
-
-var hoveredFeature = null;
 
 // change mouse cursor when over marker
-map.on('pointermove', function(e) {
-    if (e.dragging) {
-        $(element).popover('destroy');
-        return;
-    }
-    var pixel = map.getEventPixel(e.originalEvent);
-    var hit = map.hasFeatureAtPixel(pixel);
-    map.getTarget().style.cursor = hit ? 'pointer' : '';
+map.on('pointermove', function(event) {
+    var feature = map.forEachFeatureAtPixel(event.pixel, function(feature, layer) { return feature; });
+    map.getTarget().style.cursor = feature != null ? 'pointer' : '';
 
-    var feature = map.forEachFeatureAtPixel(pixel,
-        function(feature, layer) {
-            return feature;
-        });
-
-    if (hoveredFeature) {
-        if (hoveredFeature != feature) {
-            if (hoveredFeature != selectedFeature) {
-                setAirplaneFeatureStyle(hoveredFeature, "");
-                hoveredFeature = null;
+    if (hoveredAirplane) {
+        if (!feature || hoveredAirplane.icao != feature.getId()) {
+            if (hoveredAirplane != selectedAirplane) {
+                setAirplaneFeatureStyle(hoveredAirplane, "");
             }
+            hoveredAirplane = null;
         }
     }
-
     if (feature) {
-        if (feature != selectedFeature) {
-            setAirplaneFeatureStyle(feature, "hover");
-            hoveredFeature = feature;
+        if (!selectedAirplane || feature.getId() != selectedAirplane.icao) {
+            var airplane = getAirplane(feature.getId());
+            setAirplaneFeatureStyle(airplane, "hover");
+            hoveredAirplane = airplane;
         }
     }
-
 });
 
-function setAirplaneFeatureStyle(feature, state) {
-    var airplane = getAirplane(feature.getId());
+function setAirplaneFeatureStyle(airplane, state) {
     var rotation = 0;
     if (airplane.heading != null) rotation = airplane.heading;
     var iconStyle = getIcon("2", state, rotation);
-    feature.setStyle(iconStyle);
+    var feature = vectorSource.getFeatureById(airplane.icao);
+    if (feature) feature.setStyle(iconStyle);
 }
 
 function getIcon(size, state, rotation) {
@@ -110,6 +90,12 @@ function getIcon(size, state, rotation) {
     });
 }
 
+function updatePopoutData() {
+    $('#icao').text(selectedAirplane.icao);
+    $('#longitude').text(selectedAirplane.longitude.toFixed(8));
+    $('#latitude').text(selectedAirplane.latitude.toFixed(8));
+}
+
 function displayAirplane(airplane) {
     var lon = airplane.longitude;
     var lat = airplane.latitude;
@@ -119,7 +105,12 @@ function displayAirplane(airplane) {
     var rotation = 0;
     if (airplane.heading != null) rotation = airplane.heading;
 
-    var iconStyle = getIcon("2", "", rotation);
+    var state = airplane == selectedAirplane ? "clicked" : "";
+    var iconStyle = getIcon("2", state, rotation);
+
+    if (state == "clicked") {
+        updatePopoutData();
+    }
 
     var iconFeature = new ol.Feature({
         geometry: new ol.geom.Point(ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857')),
