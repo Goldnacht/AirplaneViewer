@@ -9,35 +9,32 @@ block content
       a(href='#', onclick="closePopout();")
         i(class='fa fa-close fa-lg')
     div.airplaneInfos
-      div.airplaneSizeImage
+      div.valueHalf
         i(class='fa fa-plane fa-lg')
-        //img(src='/images/AirplaneBig.png')blöb
-      div#icao(class='icao') NDef
-      //div.flightNumber ABCDEF
-      div.position
+        span#acid(class='data') NDef
+      div.valueHalf
+        i(class='fa fa-database fa-lg')
+        span#icao(class='data') NDef
+      div.valueFull
         i(class='fa fa-map-marker fa-lg')
-        span#longitude(class='data') NDef
         span#latitude(class='data') NDef
-      div.speedHorizontal
+        span#longitude(class='data') NDef
+      div.valueHalf
         i(class='fa fa-arrows-h fa-lg')
         span#horizontal(class="data") NDef
         span.unit kt
-      div.speedVertical
+      div.valueHalf
         i(class='fa fa-arrows-v fa-lg')
         span#vertical(class="data") NDef
-        span.unit ft/min
-      //div.departureAirport
-        i(class='fa fa-location-arrow fa-lg')
-        span.data STG
-      //div.departureTime
-        i(class='fa fa-clock-o fa-lg')
-        span.data 12:45
-      //div.arrivalAirport
-        i(class='fa fa-location-arrow fa-lg fa-rotate-90')
-        span.data MAD
-      //div.arrivalTime
-        i(class='fa fa-clock-o fa-lg')
-        span.data 15:00
+        span.unit fpm
+      div.valueHalf
+        i(class='fa fa-arrow-up fa-lg')
+        span#altitude(class='data') NDef
+        span.unit ft
+      div.valueHalf
+        i(class='fa fa-rotate-right fa-lg')
+        span#heading(class='data') NDef
+        span.unit &deg;
 
   div#search
     div.inner

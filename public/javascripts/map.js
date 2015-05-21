@@ -1,6 +1,8 @@
 var vectorSource = new ol.source.Vector({});
 var vectorLayer = new ol.layer.Vector({ source: vectorSource });
 
+//new ol.layer.Tile({source: new ol.source.OSM()})
+
 var map = new ol.Map({
     layers: [new ol.layer.Tile({source: new ol.source.OSM()}), vectorLayer],
     target: document.getElementById('map'),
@@ -60,7 +62,7 @@ map.on('pointermove', function(event) {
             var airplane = getAirplane(feature.getId());
             setAirplaneFeatureStyle(airplane, "hover");
             hoveredAirplane = airplane;
-            $("#tooltipInfo").text(airplane.icao);
+            $("#tooltipInfo").text(airplane.acid);
             $("#tooltip").show();
         }
     } else {
@@ -107,10 +109,13 @@ function getIcon(size, state, rotation) {
 
 function updatePopoutData() {
     $('#icao').text(selectedAirplane.icao);
+    $('#acid').text(selectedAirplane.acid);
     $('#longitude').text(selectedAirplane.longitude.toFixed(8));
     $('#latitude').text(selectedAirplane.latitude.toFixed(8));
     $('#horizontal').text(selectedAirplane.horizontal);
     $('#vertical').text(selectedAirplane.vertical);
+    $('#heading').text(selectedAirplane.heading);
+    $('#altitude').text(selectedAirplane.altitude);
 }
 
 function displayAirplane(airplane) {

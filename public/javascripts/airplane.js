@@ -24,6 +24,8 @@ function getAirplane(icao) {
                 readHeading(this.icao);
                 readHorizontal(this.icao);
                 readVertical(this.icao);
+                readAltitude(this.icao);
+                readAcid(this.icao);
             }
         };
     }
@@ -129,11 +131,13 @@ function readAltitude(icao) {
     function SaveFunction(data) {
         result = data.get;
         var ap = getAirplane(icao);
-        if (isNaN(result)) return;
         var nVal = parseFloat(result);
-        if (nVal != ap.altitude) {
+        if (!isNaN(nVal) && nVal != ap.altitude) {
+            var time = (new Date).getTime();
             ap.altitude = nVal;
-            logChange(icao, "alt", nVal);
+            logChange(icao, "alt",nVal,time);
+            ap.changed = true;
+            ap.changedTime = time;
         }
     }
 }
@@ -144,7 +148,13 @@ function readAcid(icao) {
     function SaveFunction(data) {
         result = data.get;
         var ap = getAirplane(icao);
-        ap.acid = result;
+        if (result && result != ap.acid) {
+            var time = (new Date).getTime();
+            ap.acid = result;
+            logChange(icao, "acid",nVal,time);
+            ap.changed = true;
+            ap.changedTime = time;
+        }
     }
 }
 

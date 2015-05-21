@@ -55,40 +55,31 @@ a, a:hover, a:visited, a:active {
     background: @blueBg;
     border-radius: 3px;
     margin: 1px;
-
+    font-size: 0.9em;
     display: flex;
     color: #ffffff;
     flex-wrap: wrap;
 
+    i {
+      width: 16px;
+    }
+
     div {
       //border: 1px solid white;
-      padding-bottom: 20px;
-    }
-
-    .airplaneSizeImage {
-      flex: 0 0 32px;
-    }
-
-    .flightNumber {
-      flex: 1 1 auto;
-    }
-
-    .icao {
-      flex: 1 1 auto;
-      text-align: center;
-      font-size: larger;
-    }
-
-    .speedHorizontal, .speedVertical {
-      flex: 1 1 50%;
+      padding-bottom: 10px;
+      padding-top: 10px;
     }
 
     .position {
       flex: 0 0 auto;
     }
 
-    .departureAirport, .departureTime, .arrivalAirport, .arrivalTime {
+    .valueHalf {
       flex: 1 1 50%;
+    }
+
+    .valueFull {
+      flex: 100%;
     }
 
     span.data {
