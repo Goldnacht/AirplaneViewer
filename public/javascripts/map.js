@@ -42,7 +42,7 @@ map.on('click', function (event) {
 
 function selectAirplane(airplane) {
     if (selectedAirplane != null) {
-        if (selectedAirplane.icao != feature.getId()) { setAirplaneFeatureStyle(selectedAirplane, ""); }
+        if (selectedAirplane.icao != airplane.icao) { setAirplaneFeatureStyle(selectedAirplane, ""); }
     }
     selectedAirplane = airplane;
     updatePopoutData();
