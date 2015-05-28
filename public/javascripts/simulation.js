@@ -15,7 +15,8 @@ var Position = function(lon, lat, h) {
  * t:       Zeitintervall in Sekunden
  * dir:     Flugrichtung in Radiant zu Nord
  */
-function getNewPosition(pos, vHor, vVert, t, dir) {
+function calculatePosition(pos, vHor, vVert, timeDiff, dir) {
+    var t = timeDiff;
     var alpha = dir;
     var r_z0 = pos.height;
     var r_x0 = pos.longitude;
