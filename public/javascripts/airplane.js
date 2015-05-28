@@ -151,7 +151,7 @@ function readAcid(icao) {
         if (result && result != ap.acid) {
             var time = (new Date).getTime();
             ap.acid = result;
-            logChange(icao, "acid",nVal,time);
+            logChange(icao, "acid",result,time);
             ap.changed = true;
             ap.changedTime = time;
         }
