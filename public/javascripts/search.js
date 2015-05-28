@@ -1,5 +1,5 @@
-function searchAirplane(form){
-    var searchString=$(form).child(".searchInput").text();
+function searchAirplane(formName){
+    var searchString = $(formName).find(".searchInput").val();
     alert(searchString);
 }
 
