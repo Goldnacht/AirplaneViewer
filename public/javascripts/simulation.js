@@ -2,10 +2,10 @@
  * Created by Frederik on 28.05.2015.
  */
 
-var Position = function(lon, lat, h) {
+var Position = function(lon, lat, alt) {
     this.longitude = lon;
     this.longitude = lat;
-    this.height = h;
+    this.altitude = alt;
 }
 
 /*
@@ -18,7 +18,7 @@ var Position = function(lon, lat, h) {
 function calculatePosition(pos, vHor, vVert, timeDiff, dir) {
     var t = timeDiff;
     var alpha = dir;
-    var r_z0 = pos.height;
+    var r_z0 = pos.altitude;
     var r_x0 = pos.longitude;
     var r_y0 = pos.latitude;
     var kt_ms = 0.51444;
