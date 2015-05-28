@@ -38,9 +38,10 @@ block content
 
   div#search
     div.inner
-      input.searchInput(placeholder='Suchanfrage...')
-      button.startSearch
-        i(class='fa fa-search fa-lg')
+      form#searchAirplane
+        input.searchInput(placeholder='Suchanfrage...')
+        button.startSearch(onclick="searchAirplane('#searchAirplane');")
+          i(class='fa fa-search fa-lg')
 
   div#options
     div.close
