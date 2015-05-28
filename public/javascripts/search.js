@@ -1,8 +1,15 @@
 function searchAirplane(formName){
     var searchString = $(formName).find(".searchInput").val();
+    searchString = searchString.toUpperCase().trim();
     var airplane=searchIcao(searchString);
+    if (!airplane) airplane = searchAcid(searchString);
     if(airplane){
         setFocusOnAirplane(airplane);
+        selectAirplane(airplane);
+        toggleSearch();
+        $(formName).find(".searchInput").val("");
+    } else {
+        alert("Could not find an airplane for this data");
     }
 }
 
@@ -14,6 +21,21 @@ function searchIcao(icao){
     return null;
 }
 
-function setFocusOnAirplane (airplane){
+function searchAcid(acid) {
+    for(ap in airplanes){
+        var airplane=airplanes[ap];
+        if (airplane.acid == acid) return airplane;
+    }
+    return null;
+}
 
+function setFocusOnAirplane (airplane){
+    var target = ol.proj.transform([airplane.longitude, airplane.latitude], 'EPSG:4326', 'EPSG:3857');
+    var pan = ol.animation.pan({
+        duration: 2000,
+        source: (view.getCenter())
+    });
+    map.beforeRender(pan);
+    view.setCenter(target);
+    view.setZoom(12);
 }

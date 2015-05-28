@@ -3,13 +3,15 @@ var vectorLayer = new ol.layer.Vector({ source: vectorSource });
 
 //new ol.layer.Tile({source: new ol.source.OSM()})
 
+var view = new ol.View({
+    center: ol.proj.transform([9.205604, 48.687524], 'EPSG:4326', 'EPSG:3857'),
+    zoom: 8
+});
+
 var map = new ol.Map({
     layers: [new ol.layer.Tile({source: new ol.source.OSM()}), vectorLayer],
     target: document.getElementById('map'),
-    view: new ol.View({
-        center: ol.proj.transform([9.205604, 48.687524], 'EPSG:4326', 'EPSG:3857'),
-        zoom: 8
-    })
+    view: view
 });
 
 $('.ol-attribution').prepend('<div class="creators">&copy; Frederik Eschmann, Hatice Yildirim, Christine Vosseler, Waldemar Stenski</div>');
@@ -30,19 +32,23 @@ function closePopout() {
 map.on('click', function (event) {
     var feature = map.forEachFeatureAtPixel(event.pixel, function(feature, layer) { return feature; });
     if (feature) {
-        if (selectedAirplane != null) {
-            if (selectedAirplane.icao != feature.getId()) { setAirplaneFeatureStyle(selectedAirplane, ""); }
-        }
-        console.log("Feature clicked: " + feature.getId());
         var airplane = getAirplane(feature.getId());
-        selectedAirplane = airplane;
-        updatePopoutData();
-        setAirplaneFeatureStyle(selectedAirplane, "clicked");
-        $('#popout').fadeIn();
+        console.log("Feature clicked: " + feature.getId());
+        selectAirplane(airplane);
     } else {
         closePopout();
     }
 });
+
+function selectAirplane(airplane) {
+    if (selectedAirplane != null) {
+        if (selectedAirplane.icao != feature.getId()) { setAirplaneFeatureStyle(selectedAirplane, ""); }
+    }
+    selectedAirplane = airplane;
+    updatePopoutData();
+    setAirplaneFeatureStyle(selectedAirplane, "clicked");
+    $('#popout').fadeIn();
+}
 
 // change mouse cursor when over marker
 map.on('pointermove', function(event) {
