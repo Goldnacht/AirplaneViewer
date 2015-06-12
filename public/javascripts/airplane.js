@@ -5,9 +5,14 @@ var APViewer = APViewer || {
         Airplane: function (icao) {
             /* Class Attributes */
             this.icao = icao;
+
             this.longitude = null;
             this.latitude = null;
             this.altitude = null;
+
+            this.realLongitude = null;
+            this.realLatitude = null;
+            this.realAltitude = null;
 
             this.setLongitude = setLongitude;
             this.setLatitude = setLatitude;
@@ -18,6 +23,8 @@ var APViewer = APViewer || {
             this.hSpeed = null;
             this.vSpeed = null;
             this.changed = null;
+
+            this.drawn = null;
 
             this.update = updateFunction;
         }
@@ -47,22 +54,25 @@ function returnFloat(value) {
 }
 
 function setLongitude(longitute) {
-    if (this.longitude != longitute && longitute) {
+    if (this.realLongitude != longitute && longitute) {
         this.changed = new Date().getTime();
         this.longitude = longitute;
+        this.realLongitude = longitute;
     }
 }
 
 function setLatitude(latitude) {
-    if (this.latitude != latitude && latitude) {
+    if (this.realLatitude != latitude && latitude) {
         this.changed = new Date().getTime();
+        this.realLatitude = latitude;
         this.latitude = latitude;
     }
 }
 
 function setAltitude(altitude) {
-    if (this.altitude != altitude && altitude) {
+    if (this.realAltitude != altitude && altitude) {
         this.changed = new Date().getTime();
+        this.realAltitude = altitude;
         this.altitude = altitude;
     }
 }

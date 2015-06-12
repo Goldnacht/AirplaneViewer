@@ -91,7 +91,8 @@ $(document).bind('mousemove',function(e){
 function setAirplaneFeatureStyle(airplane, state) {
     var rotation = 0;
     if (airplane.heading != null) rotation = airplane.heading;
-    var iconStyle = getIcon("2", state, rotation);
+    var apIcon = !airplane.heading ? "NH" : "2";
+    var iconStyle = getIcon(apIcon, state, rotation);
     var feature = vectorSource.getFeatureById(airplane.icao);
     if (feature) feature.setStyle(iconStyle);
 }
@@ -127,7 +128,7 @@ function updatePopoutData() {
     $('#horizontal').text(APViewer.mapper.selectedAirplane.hSpeed);
     $('#vertical').text(APViewer.mapper.selectedAirplane.vSpeed);
     $('#heading').text(APViewer.mapper.selectedAirplane.heading);
-    $('#altitude').text(APViewer.mapper.selectedAirplane.altitude);
+    $('#altitude').text(APViewer.mapper.selectedAirplane.altitude.toFixed(1));
 }
 
 function logAirplane () {
@@ -143,15 +144,21 @@ function displayAirplane(airplane) {
     if (feature != null) { vectorSource.removeFeature(feature); }
 
     // Check for timeout of airplane
-    var tDiff = Math.floor((new Date().getTime() - airplane.changed) / 1000);
-    if (tDiff > 360) return;
+    var now = new Date().getTime();
+    if (now - airplane.changed > 360000) return;
 
-    var position = new APViewer.simulation.Position(airplane.longitude, airplane.latitude, airplane.altitude);
     // Check if current position should be calculated
     // -- Depends on heading and time difference
-    if (tDiff > 0 && airplane.heading) {
+    if (airplane.drawn && airplane.heading && (now - airplane.drawn) > 0) {
+        var tDiff = (now - airplane.drawn)/1000;
+        var position = new APViewer.simulation.Position(airplane.longitude, airplane.latitude, airplane.altitude);
         position = APViewer.simulation.calculatePosition(position, airplane.hSpeed, airplane.vSpeed, tDiff, airplane.heading);
+        airplane.longitude = position.longitude;
+        airplane.latitude = position.latitude;
+        airplane.altitude = position.altitude;
     }
+
+    airplane.drawn = now;
 
     //console.log("pos: "+ position.longitude + " " + position.latitude);
 
@@ -159,14 +166,15 @@ function displayAirplane(airplane) {
     if (airplane.heading != null) rotation = airplane.heading;
 
     var state = airplane == APViewer.mapper.selectedAirplane ? "clicked" : "";
-    var iconStyle = getIcon("2", state, rotation);
+    var apIcon = !airplane.heading ? "NH" : "2";
+    var iconStyle = getIcon(apIcon, state, rotation);
 
     if (state == "clicked") {
         updatePopoutData();
     }
 
     var iconFeature = new ol.Feature({
-        geometry: new ol.geom.Point(ol.proj.transform([position.longitude, position.latitude], 'EPSG:4326', 'EPSG:3857')),
+        geometry: new ol.geom.Point(ol.proj.transform([airplane.longitude, airplane.latitude], 'EPSG:4326', 'EPSG:3857')),
         name: airplane.icao
     });
     iconFeature.setId(airplane.icao);
@@ -213,6 +221,6 @@ function main() {
     updateAirplanes();
     setInterval(getNewAirplanes, 10000);
     setInterval(updateAirplanes, 5000);
-    setInterval(displayAirplanes, 1000);
+    setInterval(displayAirplanes, 500);
 }
 main();
