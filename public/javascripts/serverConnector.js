@@ -8,9 +8,9 @@ var APViewer = APViewer || {};
 
 APViewer.serverConnector = {
     callAirplanes: function(callback) {
-        $.get(server+"/keys/icao.active.*", callback);
+        $.get(server+"/keys/icao.active.*", function(data){callback(data.keys);});
     },
     callValue: function(icao, value, callback) {
-        $.get(server+"/get/icao."+value+"."+icao, callback);
+        $.get(server+"/get/icao."+value+"."+icao, function(data){callback(data.get);});
     }
 };

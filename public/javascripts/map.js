@@ -135,8 +135,25 @@ function logAirplane () {
 }
 
 function displayAirplane(airplane) {
+    // Checking if airplane has position
+    if (!airplane.longitude || !airplane.latitude) return;
+
+    // Get Feature if exists for airplane and remove it from map
     var feature = vectorSource.getFeatureById(airplane.icao);
     if (feature != null) { vectorSource.removeFeature(feature); }
+
+    // Check for timeout of airplane
+    var tDiff = Math.floor((new Date().getTime() - airplane.changed) / 1000);
+    if (tDiff > 360) return;
+
+    var position = new APViewer.simulation.Position(airplane.longitude, airplane.latitude, airplane.altitude);
+    // Check if current position should be calculated
+    // -- Depends on heading and time difference
+    if (tDiff > 0 && airplane.heading) {
+        position = APViewer.simulation.calculatePosition(position, airplane.hSpeed, airplane.vSpeed, tDiff, airplane.heading);
+    }
+
+    //console.log("pos: "+ position.longitude + " " + position.latitude);
 
     var rotation = 0;
     if (airplane.heading != null) rotation = airplane.heading;
@@ -149,7 +166,7 @@ function displayAirplane(airplane) {
     }
 
     var iconFeature = new ol.Feature({
-        geometry: new ol.geom.Point(ol.proj.transform([airplane.longitude, airplane.latitude], 'EPSG:4326', 'EPSG:3857')),
+        geometry: new ol.geom.Point(ol.proj.transform([position.longitude, position.latitude], 'EPSG:4326', 'EPSG:3857')),
         name: airplane.icao
     });
     iconFeature.setId(airplane.icao);
@@ -169,12 +186,11 @@ function toggleSearch() {
 function main() {
 
     var getNewAirplanes = function(){
-        APViewer.serverConnector.callAirplanes(function(data){
+        APViewer.serverConnector.callAirplanes(function(keys){
             var icao;
-            for (icao in data.keys) {
-                var key = data.keys[icao].split('.')[2];
-                var ap = APViewer.data.addAirplane(key);
-                //console.log("Get Airplane: " + ap.icao);
+            for (icao in keys) {
+                var key = keys[icao].split('.')[2];
+                APViewer.data.addAirplane(key);
             }
         });
     };
@@ -186,9 +202,17 @@ function main() {
         }
     };
 
+    var displayAirplanes = function() {
+        for(var i in APViewer.data.list) {
+            var ap = APViewer.data.list[i];
+            APViewer.mapper.displayAirplane(ap);
+        }
+    };
+
     getNewAirplanes();
     updateAirplanes();
     setInterval(getNewAirplanes, 10000);
     setInterval(updateAirplanes, 5000);
+    setInterval(displayAirplanes, 1000);
 }
 main();

@@ -8,12 +8,16 @@ var APViewer = APViewer || {
             this.longitude = null;
             this.latitude = null;
             this.altitude = null;
+
+            this.setLongitude = setLongitude;
+            this.setLatitude = setLatitude;
+            this.setAltitude = setAltitude;
+
             this.heading = null;
             this.acid = null;
             this.hSpeed = null;
             this.vSpeed = null;
             this.changed = null;
-            this.changedTime = null;
 
             this.update = updateFunction;
         }
@@ -37,25 +41,47 @@ APViewer.data = {
 };
 
 function returnFloat(value) {
-    var val = parseFloat(value.get);
+    var val = parseFloat(value);
     if (!isNaN(val)) return val;
     return null;
 }
 
-function updateFunction() {
-    //console.log("Update data for: " + this.icao);
-    //updateLongitude.call(this);
+function setLongitude(longitute) {
+    if (this.longitude != longitute && longitute) {
+        this.changed = new Date().getTime();
+        this.longitude = longitute;
+    }
+}
 
+function setLatitude(latitude) {
+    if (this.latitude != latitude && latitude) {
+        this.changed = new Date().getTime();
+        this.latitude = latitude;
+    }
+}
+
+function setAltitude(altitude) {
+    if (this.altitude != altitude && altitude) {
+        this.changed = new Date().getTime();
+        this.altitude = altitude;
+    }
+}
+
+function setHeading(heading) {
+    if (this.heading != heading && heading) {
+        this.heading = heading;
+    }
+}
+
+function updateFunction() {
     var ap = this;
 
-    APViewer.serverConnector.callValue(this.icao, "poslon", function(data){ap.longitude = returnFloat(data);});
-    APViewer.serverConnector.callValue(this.icao, "poslat", function(data){ap.latitude = returnFloat(data);});
+    APViewer.serverConnector.callValue(this.icao, "poslon", function(data){ap.setLongitude(returnFloat(data));});
+    APViewer.serverConnector.callValue(this.icao, "poslat", function(data){ap.setLatitude(returnFloat(data));});
+    APViewer.serverConnector.callValue(this.icao, "altitude", function(data){ap.setAltitude(returnFloat(data));});
     APViewer.serverConnector.callValue(this.icao, "heading", function(data){ap.heading = returnFloat(data);});
     APViewer.serverConnector.callValue(this.icao, "horizontal", function(data){ap.hSpeed = returnFloat(data);});
     APViewer.serverConnector.callValue(this.icao, "vertical", function(data){ap.vSpeed = returnFloat(data);});
-    APViewer.serverConnector.callValue(this.icao, "altitude", function(data){ap.altitude = returnFloat(data);});
-    APViewer.serverConnector.callValue(this.icao, "acid", function(data){ap.acid = data.get;});
+    APViewer.serverConnector.callValue(this.icao, "acid", function(data){ap.acid = data;});
 
-    //APViewer.mapper.logAirplane.call(this);
-    APViewer.mapper.displayAirplane(this);
 }
