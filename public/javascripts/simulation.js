@@ -30,7 +30,7 @@ APViewer.simulation = {
         var v_x = Math.sin(alpha) * v_horizontal * kt_ms;
         var v_y = Math.cos(alpha) * v_horizontal * kt_ms;
 
-        var u_x = 360/(40000000 * Math.cos(r_y0));
+        var u_x = 360/(40000000 * Math.cos(2 * Math.PI / 360 *r_y0));
         var u_y = 360/40000000;
 
         var r_z = v_z * (t/60) + r_z0;

@@ -91,7 +91,7 @@ $(document).bind('mousemove',function(e){
 function setAirplaneFeatureStyle(airplane, state) {
     var rotation = 0;
     if (airplane.heading != null) rotation = airplane.heading;
-    var apIcon = !airplane.heading ? "NH" : "2";
+    var apIcon = !airplane.heading ? "NHp" : "2";
     var iconStyle = getIcon(apIcon, state, rotation);
     var feature = vectorSource.getFeatureById(airplane.icao);
     if (feature) feature.setStyle(iconStyle);
@@ -127,8 +127,8 @@ function updatePopoutData() {
     $('#latitude').text(APViewer.mapper.selectedAirplane.latitude.toFixed(8));
     $('#horizontal').text(APViewer.mapper.selectedAirplane.hSpeed);
     $('#vertical').text(APViewer.mapper.selectedAirplane.vSpeed);
-    $('#heading').text(APViewer.mapper.selectedAirplane.heading);
-    $('#altitude').text(APViewer.mapper.selectedAirplane.altitude.toFixed(1));
+    $('#heading').text(APViewer.mapper.selectedAirplane.heading.toFixed(1));
+    $('#altitude').text(APViewer.mapper.selectedAirplane.altitude.toFixed(2));
 }
 
 function logAirplane () {
@@ -145,7 +145,7 @@ function displayAirplane(airplane) {
 
     // Check for timeout of airplane
     var now = new Date().getTime();
-    if (now - airplane.changed > 360000) return;
+    if (now - airplane.changed > 180000) return;
 
     // Check if current position should be calculated
     // -- Depends on heading and time difference
@@ -166,12 +166,18 @@ function displayAirplane(airplane) {
     if (airplane.heading != null) rotation = airplane.heading;
 
     var state = airplane == APViewer.mapper.selectedAirplane ? "clicked" : "";
-    var apIcon = !airplane.heading ? "NH" : "2";
+    var apIcon = !airplane.heading ? "NHp" : "2";
     var iconStyle = getIcon(apIcon, state, rotation);
 
     if (state == "clicked") {
         updatePopoutData();
     }
+
+    APViewer.mapper.logAirplane.call(airplane);
+
+    // Filter non valid longitude and latitude values
+    if (airplane.latitude >= 90 || airplane.latitude <= -90) return;
+    if (airplane.longitude >= 180 || airplane.longitude <= -180) return;
 
     var iconFeature = new ol.Feature({
         geometry: new ol.geom.Point(ol.proj.transform([airplane.longitude, airplane.latitude], 'EPSG:4326', 'EPSG:3857')),
@@ -221,6 +227,6 @@ function main() {
     updateAirplanes();
     setInterval(getNewAirplanes, 10000);
     setInterval(updateAirplanes, 5000);
-    setInterval(displayAirplanes, 500);
+    setInterval(displayAirplanes, 1000);
 }
 main();

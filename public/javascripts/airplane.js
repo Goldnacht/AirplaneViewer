@@ -17,6 +17,7 @@ var APViewer = APViewer || {
             this.setLongitude = setLongitude;
             this.setLatitude = setLatitude;
             this.setAltitude = setAltitude;
+            this.setHeading = setHeading;
 
             this.heading = null;
             this.acid = null;
@@ -78,6 +79,7 @@ function setAltitude(altitude) {
 }
 
 function setHeading(heading) {
+    var heading = (2 * Math.PI) / 360 * heading;
     if (this.heading != heading && heading) {
         this.heading = heading;
     }
@@ -89,7 +91,7 @@ function updateFunction() {
     APViewer.serverConnector.callValue(this.icao, "poslon", function(data){ap.setLongitude(returnFloat(data));});
     APViewer.serverConnector.callValue(this.icao, "poslat", function(data){ap.setLatitude(returnFloat(data));});
     APViewer.serverConnector.callValue(this.icao, "altitude", function(data){ap.setAltitude(returnFloat(data));});
-    APViewer.serverConnector.callValue(this.icao, "heading", function(data){ap.heading = returnFloat(data);});
+    APViewer.serverConnector.callValue(this.icao, "heading", function(data){ap.setHeading(returnFloat(data))});
     APViewer.serverConnector.callValue(this.icao, "horizontal", function(data){ap.hSpeed = returnFloat(data);});
     APViewer.serverConnector.callValue(this.icao, "vertical", function(data){ap.vSpeed = returnFloat(data);});
     APViewer.serverConnector.callValue(this.icao, "acid", function(data){ap.acid = data;});
