@@ -1,3 +1,12 @@
+var APViewer = APViewer || {};
+
+APViewer.mapper = {
+    hoveredAirplane: null,
+    selectedAirplane: null,
+    displayAirplane: displayAirplane,
+    logAirplane: logAirplane
+};
+
 var vectorSource = new ol.source.Vector({});
 var vectorLayer = new ol.layer.Vector({ source: vectorSource });
 
@@ -19,12 +28,9 @@ $('.ol-attribution').prepend('<div class="creators">&copy; Frederik Eschmann, Ha
 $('#searchButton').prependTo('.ol-control.ol-zoom');
 $('#optionsButton').prependTo('.ol-control.ol-attribution');
 
-var selectedAirplane = null;
-var hoveredAirplane = null;
-
 function closePopout() {
-    setAirplaneFeatureStyle(selectedAirplane, "");
-    selectedAirplane = null;
+    setAirplaneFeatureStyle(APViewer.mapper.selectedAirplane, "");
+    APViewer.mapper.selectedAirplane = null;
     $('#popout').fadeOut();
 }
 
@@ -32,7 +38,7 @@ function closePopout() {
 map.on('click', function (event) {
     var feature = map.forEachFeatureAtPixel(event.pixel, function(feature, layer) { return feature; });
     if (feature) {
-        var airplane = getAirplane(feature.getId());
+        var airplane = APViewer.data.getAirplane(feature.getId());
         console.log("Feature clicked: " + feature.getId());
         selectAirplane(airplane);
     } else {
@@ -41,12 +47,12 @@ map.on('click', function (event) {
 });
 
 function selectAirplane(airplane) {
-    if (selectedAirplane != null) {
-        if (selectedAirplane.icao != airplane.icao) { setAirplaneFeatureStyle(selectedAirplane, ""); }
+    if (APViewer.mapper.selectedAirplane != null) {
+        if (APViewer.mapper.selectedAirplane.icao != airplane.icao) { setAirplaneFeatureStyle(APViewer.mapper.selectedAirplane, ""); }
     }
-    selectedAirplane = airplane;
+    APViewer.mapper.selectedAirplane = airplane;
     updatePopoutData();
-    setAirplaneFeatureStyle(selectedAirplane, "clicked");
+    setAirplaneFeatureStyle(APViewer.mapper.selectedAirplane, "clicked");
     $('#popout').fadeIn();
 }
 
@@ -55,19 +61,19 @@ map.on('pointermove', function(event) {
     var feature = map.forEachFeatureAtPixel(event.pixel, function(feature, layer) { return feature; });
     map.getTarget().style.cursor = feature != null ? 'pointer' : '';
 
-    if (hoveredAirplane) {
-        if (!feature || hoveredAirplane.icao != feature.getId()) {
-            if (hoveredAirplane != selectedAirplane) {
-                setAirplaneFeatureStyle(hoveredAirplane, "");
+    if (APViewer.mapper.hoveredAirplane) {
+        if (!feature || APViewer.mapper.hoveredAirplane.icao != feature.getId()) {
+            if (APViewer.mapper.hoveredAirplane != APViewer.mapper.selectedAirplane) {
+                setAirplaneFeatureStyle(APViewer.mapper.hoveredAirplane, "");
             }
-            hoveredAirplane = null;
+            APViewer.mapper.hoveredAirplane = null;
         }
     }
     if (feature) {
-        if (!selectedAirplane || feature.getId() != selectedAirplane.icao) {
-            var airplane = getAirplane(feature.getId());
+        if (!APViewer.mapper.selectedAirplane || feature.getId() != APViewer.mapper.selectedAirplane.icao) {
+            var airplane = APViewer.data.getAirplane(feature.getId());
             setAirplaneFeatureStyle(airplane, "hover");
-            hoveredAirplane = airplane;
+            APViewer.mapper.hoveredAirplane = airplane;
             $("#tooltipInfo").text(airplane.acid);
             $("#tooltip").show();
         }
@@ -114,26 +120,28 @@ function getIcon(size, state, rotation) {
 }
 
 function updatePopoutData() {
-    $('#icao').text(selectedAirplane.icao);
-    $('#acid').text(selectedAirplane.acid);
-    $('#longitude').text(selectedAirplane.longitude.toFixed(8));
-    $('#latitude').text(selectedAirplane.latitude.toFixed(8));
-    $('#horizontal').text(selectedAirplane.horizontal);
-    $('#vertical').text(selectedAirplane.vertical);
-    $('#heading').text(selectedAirplane.heading);
-    $('#altitude').text(selectedAirplane.altitude);
+    $('#icao').text(APViewer.mapper.selectedAirplane.icao);
+    $('#acid').text(APViewer.mapper.selectedAirplane.acid);
+    $('#longitude').text(APViewer.mapper.selectedAirplane.longitude.toFixed(8));
+    $('#latitude').text(APViewer.mapper.selectedAirplane.latitude.toFixed(8));
+    $('#horizontal').text(APViewer.mapper.selectedAirplane.hSpeed);
+    $('#vertical').text(APViewer.mapper.selectedAirplane.vSpeed);
+    $('#heading').text(APViewer.mapper.selectedAirplane.heading);
+    $('#altitude').text(APViewer.mapper.selectedAirplane.altitude);
+}
+
+function logAirplane () {
+    console.log(this.icao + ": " + this.longitude + " " + this.latitude);
 }
 
 function displayAirplane(airplane) {
-    var lon = airplane.longitude;
-    var lat = airplane.latitude;
     var feature = vectorSource.getFeatureById(airplane.icao);
     if (feature != null) { vectorSource.removeFeature(feature); }
 
     var rotation = 0;
     if (airplane.heading != null) rotation = airplane.heading;
 
-    var state = airplane == selectedAirplane ? "clicked" : "";
+    var state = airplane == APViewer.mapper.selectedAirplane ? "clicked" : "";
     var iconStyle = getIcon("2", state, rotation);
 
     if (state == "clicked") {
@@ -141,7 +149,7 @@ function displayAirplane(airplane) {
     }
 
     var iconFeature = new ol.Feature({
-        geometry: new ol.geom.Point(ol.proj.transform([lon, lat], 'EPSG:4326', 'EPSG:3857')),
+        geometry: new ol.geom.Point(ol.proj.transform([airplane.longitude, airplane.latitude], 'EPSG:4326', 'EPSG:3857')),
         name: airplane.icao
     });
     iconFeature.setId(airplane.icao);
@@ -161,44 +169,26 @@ function toggleSearch() {
 function main() {
 
     var getNewAirplanes = function(){
-        //console.log("getNewAirplanes: triggered");
-        getAirplanes(function(data){
+        APViewer.serverConnector.callAirplanes(function(data){
             var icao;
             for (icao in data.keys) {
                 var key = data.keys[icao].split('.')[2];
-                var ap = getAirplane(key);
+                var ap = APViewer.data.addAirplane(key);
+                //console.log("Get Airplane: " + ap.icao);
             }
         });
     };
 
-    var triggerUpdates = function () {
-        //console.log("triggerUpdates: triggered");
-        var i;
-        for(i in airplanes) {
-            airplanes[i].update();
-        }
-    };
-
-    var updateDisplayedAirplanes = function() {
-        //console.log("updateDisplayedAirplanes: triggered");
-        var i;
-        for(i in airplanes) {
-            var ap = airplanes[i];
-            if (ap.changed == true) {
-                if (isNaN(ap.longitude) || isNaN(ap.latitude)) continue;
-                displayAirplane(ap);
-                ap.changed = false;
-            }
-            if (ap.changedTime && ap.changedTime < ((new Date).getTime() - 300000)) {
-                removeAirplane(ap);
-                closePopout();
-            }
+    var updateAirplanes = function() {
+        for(var i in APViewer.data.list) {
+            var ap = APViewer.data.list[i];
+            ap.update.call(ap);
         }
     };
 
     getNewAirplanes();
+    updateAirplanes();
     setInterval(getNewAirplanes, 10000);
-    setInterval(triggerUpdates, 2000);
-    setInterval(updateDisplayedAirplanes, 1000);
+    setInterval(updateAirplanes, 5000);
 }
 main();
