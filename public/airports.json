@@ -1,0 +1,46 @@
+{
+	"airports":[
+		{
+			"iata": "STR",
+			"name": "Flughafen Stuttgart",
+			"lon": 9.220,
+			"lat": 48.690	
+		},
+		{
+			"iata": "MCU",
+			"name": "Flughafen Muenchen",
+			"lon": 11.790,
+			"lat": 48.350
+		},
+		{
+			"iata": "FDH",
+			"name": "Flughafen Friedrichshafen",
+			"lon": 9.510,
+			"lat": 47.670
+		},
+		{
+			"iata": "AGB",
+			"name": "Flughafen Augsburg",
+			"lon": 10.930,
+			"lat": 48.430
+		},
+		{
+			"iata": "NUE",
+			"name": "Flughafen Nuernberg",
+			"lon": 11.080,
+			"lat": 49.500
+		},
+		{
+			"iata": "MHG",
+			"name": "Flughafen Mannheim",
+			"lon": 8.510,
+			"lat": 49.470
+		},
+		{
+			"iata": "FRA",
+			"name": "Flughafen Frankfurt am Main",
+			"lon": 8.540,
+			"lat": 50.030
+		}
+	]
+}
