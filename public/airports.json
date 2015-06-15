@@ -41,6 +41,42 @@
 			"name": "Flughafen Frankfurt am Main",
 			"lon": 8.540,
 			"lat": 50.030
+		},
+		{
+			"iata": "DRS",
+			"name": "Flughafen Dresden",
+			"lon": 13.770,
+			"lat": 51.130
+		},
+		{
+			"iata": "HAM",
+			"name": "Flughafen Hamburg",
+			"lon": 9.990,
+			"lat": 53.630
+		},
+		{
+			"iata": "SXF",
+			"name": "Flughafen Berlin Schoenefeld",
+			"lon": 13.520,
+			"lat": 52.380
+		},
+		{
+			"iata": "BRE",
+			"name": "Flughafen Bremen",
+			"lon": 8.790,
+			"lat": 53.050
+		},
+		{
+			"iata": "DUS",
+			"name": "Flughafen Duesseldorf",
+			"lon": 6.770,
+			"lat": 51.290
+		},
+		{
+			"iata": "CGN",
+			"name": "Flughafen Koeln",
+			"lon": 7.140,
+			"lat": 50.870
 		}
 	]
 }
