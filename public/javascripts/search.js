@@ -1,7 +1,10 @@
-function searchAirplane(formName){
-    var searchString = $(formName).find(".searchInput").val();
+$("#searchAirplane").submit(searchAirplane);
+
+function searchAirplane(e){
+    e.preventDefault();
+    var searchString = $("#searchAirplane").find(".searchInput").val();
     searchString = searchString.toUpperCase().trim();
-    var airplane=searchIcao(searchString);
+    var airplane = searchIcao(searchString);
     if (!airplane) airplane = searchAcid(searchString);
     if(airplane){
         setFocusOnAirplane(airplane);
@@ -14,16 +17,16 @@ function searchAirplane(formName){
 }
 
 function searchIcao(icao){
-    for(ap in airplanes){
-        var airplane=airplanes[ap];
+    for(ap in APViewer.data.list){
+        var airplane = APViewer.data.list[ap];
         if (airplane.icao == icao) return airplane;
     }
     return null;
 }
 
 function searchAcid(acid) {
-    for(ap in airplanes){
-        var airplane=airplanes[ap];
+    for(ap in APViewer.data.list){
+        var airplane = APViewer.data.list[ap];
         if (airplane.acid == acid) return airplane;
     }
     return null;
@@ -31,11 +34,11 @@ function searchAcid(acid) {
 
 function setFocusOnAirplane (airplane){
     var target = ol.proj.transform([airplane.longitude, airplane.latitude], 'EPSG:4326', 'EPSG:3857');
-    var pan = ol.animation.pan({
+    /*var pan = ol.animation.pan({
         duration: 2000,
         source: (view.getCenter())
     });
-    map.beforeRender(pan);
+    map.beforeRender(pan);*/
     view.setCenter(target);
     view.setZoom(12);
 }

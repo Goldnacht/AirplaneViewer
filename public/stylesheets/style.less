@@ -60,8 +60,18 @@ a, a:hover, a:visited, a:active {
     color: #ffffff;
     flex-wrap: wrap;
 
-    i {
+    i, span.fa-stack {
       width: 16px;
+      height: 16px;
+    }
+
+    i.i-hl {
+      color: @blueBg;
+      font-size: smaller;
+    }
+
+    span.fa-stack {
+      margin-top: -24px;
     }
 
     div {
@@ -88,6 +98,23 @@ a, a:hover, a:visited, a:active {
 
     span.unit {
       padding-left: 5px;
+    }
+  }
+}
+
+#mapLayerChooser {
+  position: absolute;
+  z-index: 100;
+  bottom: .5em;
+  left: .5em;
+
+  .inner {
+    border-radius: 3px;
+    margin: 1px;
+
+    img {
+      margin: 1px;
+      border-radius: 3px;
     }
   }
 }

@@ -3,30 +3,65 @@ var APViewer = APViewer || {};
 APViewer.mapper = {
     hoveredAirplane: null,
     selectedAirplane: null,
+    hoveredAirport: null,
+    selectedAirport: null,
     displayAirplane: displayAirplane,
-    logAirplane: logAirplane
+    logAirplane: logAirplane,
+    displayAirport: displayAirport
 };
 
 var vectorSource = new ol.source.Vector({});
 var vectorLayer = new ol.layer.Vector({ source: vectorSource });
 
-//new ol.layer.Tile({source: new ol.source.OSM()})
+var layerGroups = [
+    new ol.layer.Group({
+        layers: [
+            new ol.layer.Tile({
+                source: new ol.source.OSM()
+            }),
+            vectorLayer
+        ]
+    }),
+    new ol.layer.Group({
+        layers: [
+            new ol.layer.Tile({
+                source: new ol.source.MapQuest({layer: 'sat'})
+            }),
+            new ol.layer.Tile({
+                source: new ol.source.MapQuest({layer: 'hyb'})
+            }),
+            vectorLayer
+        ]
+    })
+];
+
+var layerChooserImage = ["layer_sat.png","layer_map.png"];
 
 var view = new ol.View({
     center: ol.proj.transform([9.205604, 48.687524], 'EPSG:4326', 'EPSG:3857'),
-    zoom: 8
+    zoom: 8,
+    maxZoom: 11
+});
+//new ol.source.OSM()
+var map = new ol.Map({
+    target: document.getElementById('map'),
+    view: view,
+    interactions : ol.interaction.defaults({doubleClickZoom :true})
 });
 
-var map = new ol.Map({
-    layers: [new ol.layer.Tile({source: new ol.source.OSM()}), vectorLayer],
-    target: document.getElementById('map'),
-    view: view
+var currentMap = 0;
+
+$('#mapLayerChooser').click(function(event){
+    console.log("click");
+    currentMap = currentMap == 0 ? 1 : 0;
+    map.setLayerGroup(layerGroups[currentMap]);
+    $("#mapLayerChooserImage").attr("src","images/"+layerChooserImage[currentMap]);
 });
 
 $('.ol-attribution').prepend('<div class="creators">&copy; Frederik Eschmann, Hatice Yildirim, Christine Vosseler, Waldemar Stenski</div>');
 
 $('#searchButton').prependTo('.ol-control.ol-zoom');
-$('#optionsButton').prependTo('.ol-control.ol-attribution');
+//$('#optionsButton').prependTo('.ol-control.ol-attribution');
 
 function closePopout() {
     setAirplaneFeatureStyle(APViewer.mapper.selectedAirplane, "");
@@ -37,9 +72,9 @@ function closePopout() {
 // display popup on click
 map.on('click', function (event) {
     var feature = map.forEachFeatureAtPixel(event.pixel, function(feature, layer) { return feature; });
-    if (feature) {
+    if (feature && feature.get("iconType") == "airplane") {
         var airplane = APViewer.data.getAirplane(feature.getId());
-        console.log("Feature clicked: " + feature.getId());
+        //console.log("Feature clicked: " + feature.getId());
         selectAirplane(airplane);
     } else {
         closePopout();
@@ -61,23 +96,53 @@ map.on('pointermove', function(event) {
     var feature = map.forEachFeatureAtPixel(event.pixel, function(feature, layer) { return feature; });
     map.getTarget().style.cursor = feature != null ? 'pointer' : '';
 
-    if (APViewer.mapper.hoveredAirplane) {
-        if (!feature || APViewer.mapper.hoveredAirplane.icao != feature.getId()) {
+    function resetHoveredAirplane() {
+        if (APViewer.mapper.hoveredAirplane) {
             if (APViewer.mapper.hoveredAirplane != APViewer.mapper.selectedAirplane) {
                 setAirplaneFeatureStyle(APViewer.mapper.hoveredAirplane, "");
             }
             APViewer.mapper.hoveredAirplane = null;
         }
     }
+    function resetHoveredAirport() {
+        if (APViewer.mapper.hoveredAirport) {
+            if (APViewer.mapper.hoveredAirport != APViewer.mapper.selectedAirport) {
+                setAirportFeatureStyle(APViewer.mapper.hoveredAirport, "");
+            }
+            APViewer.mapper.hoveredAirport = null;
+        }
+    }
+
+    function reset(type) {
+        if (type != "airport") resetHoveredAirport();
+        if (type != "airplane") resetHoveredAirplane();
+    }
+
     if (feature) {
-        if (!APViewer.mapper.selectedAirplane || feature.getId() != APViewer.mapper.selectedAirplane.icao) {
+        var type = feature.get("iconType");
+        reset(type);
+        if (type == "airplane") {
             var airplane = APViewer.data.getAirplane(feature.getId());
-            setAirplaneFeatureStyle(airplane, "hover");
+            if (airplane != APViewer.mapper.hoveredAirplane) resetHoveredAirplane();
+            if (!APViewer.mapper.selectedAirplane || feature.getId() != APViewer.mapper.selectedAirplane.icao) {
+                setAirplaneFeatureStyle(airplane, "hover");
+            }
             APViewer.mapper.hoveredAirplane = airplane;
-            $("#tooltipInfo").text(airplane.acid);
+            $("#tooltipInfo").text(airplane.acid ? airplane.acid : airplane.icao);
+            $("#tooltip").show();
+
+        } else if (type == "airport") {
+            var airport = APViewer.airport.getAirport(feature.getId());
+            if (airport != APViewer.mapper.hoveredAirport) resetHoveredAirport();
+
+            setAirportFeatureStyle(airport, "hover");
+
+            APViewer.mapper.hoveredAirport = airport;
+            $("#tooltipInfo").text(airport.iata + " | " + airport.name);
             $("#tooltip").show();
         }
     } else {
+        reset();
         $("#tooltip").hide();
     }
 });
@@ -89,12 +154,23 @@ $(document).bind('mousemove',function(e){
 });
 
 function setAirplaneFeatureStyle(airplane, state) {
+    if (!airplane) return;
     var rotation = 0;
     if (airplane.heading != null) rotation = airplane.heading;
-    var apIcon = !airplane.heading ? "NHp" : "2";
+    var apIcon = !airplane.heading ? "NHp" : "";
     var iconStyle = getIcon(apIcon, state, rotation);
     var feature = vectorSource.getFeatureById(airplane.icao);
     if (feature) feature.setStyle(iconStyle);
+}
+
+function setAirportFeatureStyle(airport, state) {
+    if (!airport) return;
+    var feature = vectorSource.getFeatureById(airport.iata);
+    if (feature) {
+        var stateImg = state ? "_" + state : "";
+        var image = "images/Airport"+ stateImg +".png";
+        feature.setStyle(new ol.style.Style({image: new ol.style.Icon({src: image})}));
+    }
 }
 
 function getIcon(size, state, rotation) {
@@ -109,12 +185,8 @@ function getIcon(size, state, rotation) {
 
     return new ol.style.Style({
         image: new ol.style.Icon(({
-            anchor: [16, 16],
-            size: [32,32],
-            anchorXUnits: 'pixels',
-            anchorYUnits: 'pixels',
-            opacity: 0.85,
             src: src,
+            scale: 0.04 * view.getZoom(),
             rotation: rotation
         }))
     });
@@ -127,7 +199,7 @@ function updatePopoutData() {
     $('#latitude').text(APViewer.mapper.selectedAirplane.latitude.toFixed(8));
     $('#horizontal').text(APViewer.mapper.selectedAirplane.hSpeed);
     $('#vertical').text(APViewer.mapper.selectedAirplane.vSpeed);
-    $('#heading').text(APViewer.mapper.selectedAirplane.heading.toFixed(1));
+    $('#heading').text(APViewer.mapper.selectedAirplane.heading ? APViewer.mapper.selectedAirplane.heading.toFixed(1) : "?");
     $('#altitude').text(APViewer.mapper.selectedAirplane.altitude.toFixed(2));
 }
 
@@ -145,7 +217,10 @@ function displayAirplane(airplane) {
 
     // Check for timeout of airplane
     var now = new Date().getTime();
-    if (now - airplane.changed > 180000) return;
+    if (now - airplane.changed > 240000){
+        if (airplane == APViewer.mapper.selectedAirplane) closePopout();
+        return;
+    }
 
     // Check if current position should be calculated
     // -- Depends on heading and time difference
@@ -165,15 +240,15 @@ function displayAirplane(airplane) {
     var rotation = 0;
     if (airplane.heading != null) rotation = airplane.heading;
 
-    var state = airplane == APViewer.mapper.selectedAirplane ? "clicked" : "";
-    var apIcon = !airplane.heading ? "NHp" : "2";
+    var state = airplane == APViewer.mapper.selectedAirplane ? "clicked" : airplane == APViewer.mapper.hoveredAirplane ? "hover" : "";
+    var apIcon = !airplane.heading ? "NHp" : "";
     var iconStyle = getIcon(apIcon, state, rotation);
 
     if (state == "clicked") {
         updatePopoutData();
     }
 
-    APViewer.mapper.logAirplane.call(airplane);
+    //APViewer.mapper.logAirplane.call(airplane);
 
     // Filter non valid longitude and latitude values
     if (airplane.latitude >= 90 || airplane.latitude <= -90) return;
@@ -185,6 +260,23 @@ function displayAirplane(airplane) {
     });
     iconFeature.setId(airplane.icao);
     iconFeature.setStyle(iconStyle);
+    iconFeature.set("iconType","airplane");
+    vectorSource.addFeature(iconFeature);
+}
+
+function displayAirport(airport) {
+    var iconStyle = new ol.style.Style({
+        image: new ol.style.Icon(({
+            src: "images/Airport.png"
+        }))
+    });
+    var iconFeature = new ol.Feature({
+        geometry: new ol.geom.Point(ol.proj.transform([airport.lon, airport.lat], 'EPSG:4326', 'EPSG:3857')),
+        name: airport.name
+    });
+    iconFeature.setId(airport.iata);
+    iconFeature.setStyle(iconStyle);
+    iconFeature.set("iconType","airport");
     vectorSource.addFeature(iconFeature);
 }
 
@@ -198,6 +290,8 @@ function toggleSearch() {
 }
 
 function main() {
+
+    map.setLayerGroup(layerGroups[currentMap]);
 
     var getNewAirplanes = function(){
         APViewer.serverConnector.callAirplanes(function(keys){
@@ -228,5 +322,7 @@ function main() {
     setInterval(getNewAirplanes, 10000);
     setInterval(updateAirplanes, 5000);
     setInterval(displayAirplanes, 1000);
+
+    APViewer.airport.readAirports("airports.json");
 }
 main();

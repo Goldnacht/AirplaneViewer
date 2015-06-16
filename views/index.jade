@@ -13,7 +13,9 @@ block content
         i(class='fa fa-plane fa-lg')
         span#acid(class='data') NDef
       div.valueHalf
-        i(class='fa fa-database fa-lg')
+        span(class='fa fa-stack fa-lg')
+          i(class='fa fa-circle fa-stack-1x')
+          i(class='fa fa-plane fa-stack-1x i-hl')
         span#icao(class='data') NDef
       div.valueFull
         i(class='fa fa-map-marker fa-lg')
@@ -39,8 +41,8 @@ block content
   div#search
     div.inner
       form#searchAirplane
-        input.searchInput(placeholder='ICAO, FlightID, City...', name="searchInput")
-        button.startSearch(type='button', onclick="searchAirplane('#searchAirplane');")
+        input.searchInput(placeholder='ICAO, FlightID, Airport...', name="searchInput")
+        button.startSearch(type='submit')
           i(class='fa fa-search fa-lg')
 
   div#options
@@ -55,9 +57,13 @@ block content
       div.contact
         i(class='fa fa-envelope-o')
 
+  div#mapLayerChooser(class='ol-control')
+    div.inner
+      img#mapLayerChooserImage(src='images/layer_sat.png')
+
   button#searchButton(type="button", onclick="toggleSearch();")
     i(class='fa fa-search')
-  button#optionsButton(type="button")
+  //button#optionsButton(type="button")
     i(class='fa fa-cog')
 
   div#map(class='map')
