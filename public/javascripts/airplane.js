@@ -19,7 +19,9 @@ var APViewer = APViewer || {
             this.setAltitude = setAltitude;
             this.setHeading = setHeading;
 
+            this.headingDeg = null;
             this.heading = null;
+
             this.acid = null;
             this.hSpeed = null;
             this.vSpeed = null;
@@ -79,9 +81,10 @@ function setAltitude(altitude) {
 }
 
 function setHeading(heading) {
-    var heading = (2 * Math.PI) / 360 * heading;
+    var headingRad = (2 * Math.PI) / 360 * heading;
     if (this.heading != heading && heading) {
-        this.heading = heading;
+        this.heading = headingRad;
+        this.headingDeg = heading
     }
 }
 

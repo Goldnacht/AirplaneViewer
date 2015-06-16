@@ -199,7 +199,7 @@ function updatePopoutData() {
     $('#latitude').text(APViewer.mapper.selectedAirplane.latitude.toFixed(8));
     $('#horizontal').text(APViewer.mapper.selectedAirplane.hSpeed);
     $('#vertical').text(APViewer.mapper.selectedAirplane.vSpeed);
-    $('#heading').text(APViewer.mapper.selectedAirplane.heading ? APViewer.mapper.selectedAirplane.heading.toFixed(1) : "?");
+    $('#heading').text(APViewer.mapper.selectedAirplane.headingDeg ? APViewer.mapper.selectedAirplane.headingDeg : "?");
     $('#altitude').text(APViewer.mapper.selectedAirplane.altitude.toFixed(2));
 }
 
