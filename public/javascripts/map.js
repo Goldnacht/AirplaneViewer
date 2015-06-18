@@ -195,12 +195,12 @@ function getIcon(size, state, rotation) {
 function updatePopoutData() {
     $('#icao').text(APViewer.mapper.selectedAirplane.icao);
     $('#acid').text(APViewer.mapper.selectedAirplane.acid);
-    $('#longitude').text(APViewer.mapper.selectedAirplane.longitude.toFixed(8));
-    $('#latitude').text(APViewer.mapper.selectedAirplane.latitude.toFixed(8));
+    $('#longitude').text(APViewer.mapper.selectedAirplane.longitude.toFixed(7));
+    $('#latitude').text(APViewer.mapper.selectedAirplane.latitude.toFixed(7));
     $('#horizontal').text(APViewer.mapper.selectedAirplane.hSpeed);
     $('#vertical').text(APViewer.mapper.selectedAirplane.vSpeed);
     $('#heading').text(APViewer.mapper.selectedAirplane.headingDeg ? APViewer.mapper.selectedAirplane.headingDeg : "?");
-    $('#altitude').text(APViewer.mapper.selectedAirplane.altitude.toFixed(2));
+    $('#altitude').text(APViewer.mapper.selectedAirplane.altitude.toFixed(1));
 }
 
 function logAirplane () {
@@ -208,19 +208,32 @@ function logAirplane () {
 }
 
 function displayAirplane(airplane) {
-    // Checking if airplane has position
+    // Try to get feature of airplane
+    var feature = vectorSource.getFeatureById(airplane.icao);
+
+    // Exit when airplane has no position
     if (!airplane.longitude || !airplane.latitude) return;
 
-    // Get Feature if exists for airplane and remove it from map
-    var feature = vectorSource.getFeatureById(airplane.icao);
-    if (feature != null) { vectorSource.removeFeature(feature); }
-
-    // Check for timeout of airplane
+    // Check for timeout of airplane, if timeout then remove from map and eventually reset selection
     var now = new Date().getTime();
     if (now - airplane.changed > 240000){
-        if (airplane == APViewer.mapper.selectedAirplane) closePopout();
+        if (feature) vectorSource.removeFeature(feature);
+        if (airplane == APViewer.mapper.selectedAirplane) {
+            APViewer.mapper.selectedAirplane = null;
+            closePopout();
+        }
         return;
     }
+
+    // if feature doesnt exists create it for airplane and add it to source
+    if (!feature) {
+        feature = new ol.Feature({name: airplane.icao});
+        feature.setId(airplane.icao);
+        feature.set("iconType","airplane");
+        vectorSource.addFeature(feature);
+    }
+
+
 
     // Check if current position should be calculated
     // -- Depends on heading and time difference
@@ -254,14 +267,9 @@ function displayAirplane(airplane) {
     if (airplane.latitude >= 90 || airplane.latitude <= -90) return;
     if (airplane.longitude >= 180 || airplane.longitude <= -180) return;
 
-    var iconFeature = new ol.Feature({
-        geometry: new ol.geom.Point(ol.proj.transform([airplane.longitude, airplane.latitude], 'EPSG:4326', 'EPSG:3857')),
-        name: airplane.icao
-    });
-    iconFeature.setId(airplane.icao);
-    iconFeature.setStyle(iconStyle);
-    iconFeature.set("iconType","airplane");
-    vectorSource.addFeature(iconFeature);
+    feature.setGeometry(new ol.geom.Point(ol.proj.transform([airplane.longitude, airplane.latitude], 'EPSG:4326', 'EPSG:3857')));
+    feature.setStyle(iconStyle);
+
 }
 
 function displayAirport(airport) {
