@@ -45,26 +45,12 @@ block content
         button.startSearch(type='submit')
           i(class='fa fa-search fa-lg')
 
-  div#options
-    div.close
-      a(href='#', onclick="$('#options').fadeOut();")
-        i(class='fa fa-close fa-lg')
-    div.inner
-      div.mapstyle_sat
-        i(class='fa fa-compass')
-      div.mapstyle_earth
-        i(class='fa fa-globe')
-      div.contact
-        i(class='fa fa-envelope-o')
-
   div#mapLayerChooser(class='ol-control')
     div.inner
       img#mapLayerChooserImage(src='images/layer_sat.png')
 
   button#searchButton(type="button", onclick="toggleSearch();")
     i(class='fa fa-search')
-  //button#optionsButton(type="button")
-    i(class='fa fa-cog')
 
   div#map(class='map')
 

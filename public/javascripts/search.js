@@ -1,3 +1,6 @@
+/**
+ * Created by Frederik Eschmann
+ */
 $("#searchAirplane").submit(searchAirplane);
 
 function searchAirplane(e){
@@ -35,10 +38,10 @@ function searchAcid(acid) {
 function setFocusOnAirplane (airplane){
     var target = ol.proj.transform([airplane.longitude, airplane.latitude], 'EPSG:4326', 'EPSG:3857');
     /*var pan = ol.animation.pan({
-        duration: 2000,
-        source: (view.getCenter())
-    });
-    map.beforeRender(pan);*/
+     duration: 2000,
+     source: (view.getCenter())
+     });
+     map.beforeRender(pan);*/
     view.setCenter(target);
     view.setZoom(12);
 }

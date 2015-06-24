@@ -1,37 +1,37 @@
 /**
- * Created by frederik on 21.04.15
+ * Created by Frederik Eschmann
  */
-var APViewer = APViewer || {
-        Airplane: function (icao) {
-            /* Class Attributes */
-            this.icao = icao;
+var APViewer = APViewer || {};
 
-            this.longitude = null;
-            this.latitude = null;
-            this.altitude = null;
+APViewer.Airplane = function (icao) {
+    /* Class Attributes */
+    this.icao = icao;
 
-            this.realLongitude = null;
-            this.realLatitude = null;
-            this.realAltitude = null;
+    this.longitude = null;
+    this.latitude = null;
+    this.altitude = null;
 
-            this.setLongitude = setLongitude;
-            this.setLatitude = setLatitude;
-            this.setAltitude = setAltitude;
-            this.setHeading = setHeading;
+    this.realLongitude = null;
+    this.realLatitude = null;
+    this.realAltitude = null;
 
-            this.headingDeg = null;
-            this.heading = null;
+    this.setLongitude = setLongitude;
+    this.setLatitude = setLatitude;
+    this.setAltitude = setAltitude;
+    this.setHeading = setHeading;
 
-            this.acid = null;
-            this.hSpeed = null;
-            this.vSpeed = null;
-            this.changed = null;
+    this.headingDeg = null;
+    this.heading = null;
 
-            this.drawn = null;
+    this.acid = null;
+    this.hSpeed = null;
+    this.vSpeed = null;
+    this.changed = null;
 
-            this.update = updateFunction;
-        }
-    };
+    this.drawn = null;
+
+    this.update = updateFunction;
+};
 
 APViewer.data = {
     list: [],

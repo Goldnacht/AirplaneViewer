@@ -1,5 +1,5 @@
 /**
- * Created by Frederik on 16.06.2015.
+ * Created by Frederik Eschmann
  */
 
 var APViewer = APViewer || {};
