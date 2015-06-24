@@ -1,7 +1,6 @@
 /**
  * Created by Frederik Eschmann
  */
-
 var APViewer = APViewer || {};
 
 APViewer.serverConnector = {

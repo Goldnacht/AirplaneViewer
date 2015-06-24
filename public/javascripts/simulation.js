@@ -1,7 +1,6 @@
 /**
  * Created by Frederik Eschmann
  */
-
 var APViewer = APViewer || {};
 
 APViewer.simulation = {
@@ -48,6 +47,3 @@ APViewer.simulation = {
         return positionNew;
     }
 };
-
-
-
