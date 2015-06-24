@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>AirplaneViewer</title>
+		<link rel="stylesheet" href="stylesheets/style.css" />
+		<link rel="stylesheet" href="http://openlayers.org/en/v3.4.0/css/ol.css" />
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+		<link red="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:600">
+		<script type="text/javascript" src="http://openlayers.org/en/v3.4.0/build/ol.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	</head>
+	<body>
+	
+		<div id="tooltip">
+			<div id="tooltipInfo"></div>
+		</div>
+		
+		<div id="popout">
+			<div class="close" id="closePopout">
+				<i class="fa fa-close fa-lg"></i>
+			</div>
+			<div class="airplaneInfos">
+				<div class="valueHalf">
+					<i class="fa fa-plane fa-lg"></i>
+					<span id="acid" class="data">NDef</span>
+				</div>
+				<div class="valueHalf">
+					<span class="fa fa-stack fa-lg">
+						<i class="fa fa-circle fa-stack-1x"></i>
+						<i class="fa fa-plane fa-stack-1x i-hl"></i>
+					</span>
+					<span id="icao" class="data">NDef</span>
+				</div>
+				<div class="valueFull">
+					<i class="fa fa-map-marker fa-lg"></i>
+					<span id="latitude" class="data">NDef</span>
+					<span id="longitude" class="data">NDef</span>
+				</div>
+				<div class="valueHalf">
+					<i class="fa fa-arrows-h fa-lg"></i>
+					<span id="horizontal" class="data">NDef</span>
+					<span class="unit">kt</span>
+				</div>
+				<div class="valueHalf">
+					<i class="fa fa-arrows-v fa-lg"></i>
+					<span id="vertical" class="data">NDef</span>
+					<span class="unit">fpm</span>
+				</div>
+				<div class="valueHalf">
+					<i class="fa fa-arrow-up fa-lg"></i>
+					<span id="altitude" class="data">NDef</span>
+					<span class="unit">ft</span>
+				</div>
+				<div class="valueHalf">
+					<i class="fa fa-rotate-right fa-lg"></i>
+					<span id="heading" class="data">NDef</span>
+					<span class="unit">&deg;</span>
+				</div>
+			</div>
+		</div>
+		
+		<div id="search">
+			<div class="inner">
+				<form id="searchAirplane">
+					<input placeholder="ICAO, ACID..." name="searchInput" class="searchInput" />
+					<button type="submit" class="startSearch">
+						<i class="fa fa-search fa-lg"></i>
+					</button>
+				</form>
+			</div>
+		</div>
+		
+		<div id="mapLayerChooser" class="ol-control">
+			<div class="inner">
+				<img id="mapLayerChooserImage" src="images/layer_sat.png">
+			</div>
+		</div>
+		
+		<button id="searchButton" type="button">
+			<i class="fa fa-search"></i>
+		</button>
+		
+		<div id="map" class="map"></div>
+		
+		<script type="text/javascript" src="javascripts/config.js"></script>
+		<script type="text/javascript" src="javascripts/airplane.js"></script>
+		<script type="text/javascript" src="javascripts/airport.js"></script>
+		<script type="text/javascript" src="javascripts/serverConnector.js"></script>
+		<script type="text/javascript" src="javascripts/search.js"></script>
+		<script type="text/javascript" src="javascripts/simulation.js"></script>
+		<script type="text/javascript" src="javascripts/map.js"></script>
+		
+	</body>
+</html>

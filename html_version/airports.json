@@ -1,0 +1,82 @@
+{
+	"airports":[
+		{
+			"iata": "STR",
+			"name": "Flughafen Stuttgart",
+			"lon": 9.205631,
+			"lat": 48.687473
+		},
+		{
+			"iata": "MCU",
+			"name": "Flughafen Muenchen",
+			"lon": 11.775016,
+			"lat": 48.353745
+		},
+	  {
+			"iata": "FDH",
+			"name": "Flughafen Friedrichshafen",
+			"lon": 9.523317,
+			"lat": 47.673090
+		},
+		{
+			"iata": "AGB",
+			"name": "Flughafen Augsburg",
+			"lon": 10.933711,
+			"lat": 48.424679
+		},
+		{
+			"iata": "NUE",
+			"name": "Flughafen Nuernberg",
+			"lon": 11.079730,
+			"lat": 49.497145
+		},
+		{
+			"iata": "MHG",
+			"name": "Flughafen Mannheim",
+			"lon": 8.518517,
+			"lat": 49.474972
+		},
+		{
+			"iata": "FRA",
+			"name": "Flughafen Frankfurt am Main",
+			"lon": 8.562095,
+			"lat": 50.038186
+		},
+		{
+			"iata": "DRS",
+			"name": "Flughafen Dresden",
+			"lon": 13.766937,
+			"lat": 51.132277
+		},
+		{
+			"iata": "HAM",
+			"name": "Flughafen Hamburg",
+			"lon": 9.997584,
+			"lat": 53.633642
+		},
+		{
+			"iata": "SXF",
+			"name": "Flughafen Berlin Schoenefeld",
+			"lon": 13.521463,
+			"lat": 52.385799
+		},
+		{
+			"iata": "BRE",
+			"name": "Flughafen Bremen",
+			"lon": 8.785932,
+			"lat": 53.048010
+		},
+		{
+			"iata": "DUS",
+			"name": "Flughafen Duesseldorf",
+			"lon": 6.762213,
+			"lat": 51.282891
+		},
+		{
+			"iata": "CGN",
+			"name": "Flughafen Koeln",
+			"lon": 7.140768,
+			"lat": 50.870668
+		}
+	]
+}
